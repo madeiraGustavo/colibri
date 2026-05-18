@@ -1,0 +1,16 @@
+{
+  "name": "colibri",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Toldos Colibri — monorepo for the commercial site",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "postinstall": "pnpm --filter @colibri/api exec prisma generate",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "build": "pnpm -r run build"
+  }
+}
