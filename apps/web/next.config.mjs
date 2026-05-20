@@ -25,6 +25,16 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // Temporary redirect: /marketplace/orcamento → /orcamento
+      {
+        source: '/marketplace/orcamento',
+        destination: '/orcamento',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig

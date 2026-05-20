@@ -1,14 +1,16 @@
 import { z } from 'zod'
 
 export const CreateQuoteSchema = z.object({
-  productId:      z.string().uuid(),
+  productId:      z.string().uuid().optional(),
   requesterName:  z.string().min(1).max(100),
   requesterEmail: z.string().email().max(255),
   requesterPhone: z.string().max(20).optional(),
+  city:           z.string().max(100).optional(),
   message:        z.string().min(1).max(1000),
   widthCm:        z.number().min(1.0).max(5000.0).optional(),
   heightCm:       z.number().min(1.0).max(5000.0).optional(),
   quantity:       z.number().int().min(1).max(10000).default(1),
+  source:         z.string().max(50).optional(),
 })
 
 export const UpdateQuoteStatusSchema = z.object({
