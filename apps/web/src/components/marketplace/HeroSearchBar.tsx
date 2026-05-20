@@ -14,9 +14,9 @@ export function HeroSearchBar({ categories }: HeroSearchBarProps) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (selectedCategory) {
-      router.push(`/marketplace/category/${selectedCategory}`)
+      router.push(`/categoria/${selectedCategory}`)
     } else {
-      router.push('/marketplace#catalogo')
+      router.push('/#catalogo')
     }
   }
 
