@@ -419,21 +419,38 @@ model MarketplaceQuoteRequest {
   requesterName   String      @map("requester_name") @db.VarChar(100)
   requesterEmail  String      @map("requester_email") @db.VarChar(255)
   requesterPhone  String?     @map("requester_phone") @db.VarChar(20)
+  city            String?     @db.VarChar(100)
   message         String      @db.Text
   widthCm         Decimal?    @map("width_cm") @db.Decimal(7, 1)
   heightCm        Decimal?    @map("height_cm") @db.Decimal(7, 1)
   quantity        Int         @default(1)
   status          QuoteStatus @default(PENDING)
   responseMessage String?     @map("response_message") @db.Text
+  source          String?     @db.VarChar(50)
+  statusUpdatedAt DateTime?   @map("status_updated_at") @db.Timestamptz
+  deletedAt       DateTime?   @map("deleted_at") @db.Timestamptz
   createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz
   updatedAt       DateTime    @updatedAt @map("updated_at") @db.Timestamptz
 
   artist  Artist             @relation(fields: [artistId], references: [id], onDelete: Cascade)
   product MarketplaceProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images  QuoteImage[]
 
   @@index([artistId, status])
   @@index([artistId, createdAt])
   @@map("marketplace_quote_requests")
+}
+
+model QuoteImage {
+  id        String   @id @default(uuid()) @db.Uuid
+  quoteId   String   @map("quote_id") @db.Uuid
+  url       String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  quote MarketplaceQuoteRequest @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@index([quoteId])
+  @@map("quote_images")
 }
 
 model MarketplaceOrder {
