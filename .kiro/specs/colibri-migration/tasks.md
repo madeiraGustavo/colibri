@@ -255,8 +255,8 @@ After completing bootstrap + branding + tenant + route migration + redirects, a 
     - Suggested commit: `fix: resolve any issues after route migration`
     - _Requirements: 12.1, 12.2, 12.4_
 
-- [ ] 5. Quote system — Quote/QuoteImage no Prisma e API
-  - [~] 5.1 Add Quote and QuoteImage models to Prisma schema (with soft delete)
+- [x] 5. Quote system — Quote/QuoteImage no Prisma e API
+  - [x] 5.1 Add Quote and QuoteImage models to Prisma schema (with soft delete)
     - Add `Quote` model with fields: id, name, phone, city, description, product, status, notes, userId, tenantId, images, createdAt, updatedAt, `deletedAt DateTime?`
     - Add `QuoteImage` model with fields: id, url, quoteId (cascade delete)
     - Add `QuoteStatus` enum: PENDING, IN_PROGRESS, COMPLETED, REJECTED
@@ -264,7 +264,7 @@ After completing bootstrap + branding + tenant + route migration + redirects, a 
     - Suggested commit: `feat: add Quote and QuoteImage models to prisma schema`
     - _Requirements: 10.3, 10.7_
 
-  - [~] 5.2 Implement POST /quotes endpoint
+  - [x] 5.2 Implement POST /quotes endpoint
     - Create route handler with Zod validation for required fields (name, phone, city, description, product)
     - Handle optional image uploads to Supabase Storage (up to 5 files)
     - Persist quote with status PENDING and associate images
@@ -272,19 +272,19 @@ After completing bootstrap + branding + tenant + route migration + redirects, a 
     - Suggested commit: `feat: implement POST /quotes endpoint with image upload`
     - _Requirements: 10.2, 10.3, 10.4, 10.7_
 
-  - [~] 5.3 Implement GET /quotes and GET /quotes/:id (admin)
+  - [x] 5.3 Implement GET /quotes and GET /quotes/:id (admin)
     - Add admin-protected GET `/quotes` with status filtering (exclude soft-deleted)
     - Add admin-protected GET `/quotes/:id` with full details and images
     - Suggested commit: `feat: implement admin GET /quotes endpoints`
     - _Requirements: 10.5, 10.6_
 
-  - [~] 5.4 Implement PUT /quotes/:id (admin)
+  - [x] 5.4 Implement PUT /quotes/:id (admin)
     - Add admin-protected PUT `/quotes/:id` for status update and notes
     - Validate status transitions with Zod
     - Suggested commit: `feat: implement admin PUT /quotes/:id for status and notes`
     - _Requirements: 10.6_
 
-  - [~] 5.5 Add quote request form to Colibri_Web
+  - [x] 5.5 Add quote request form to Colibri_Web
     - Create quote form page at `/orcamento` route
     - Include fields: name, phone, city, description, product (category select), images (up to 5)
     - Add form validation and error display
