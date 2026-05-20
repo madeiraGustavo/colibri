@@ -415,7 +415,7 @@ model MarketplaceProductImage {
 model MarketplaceQuoteRequest {
   id              String      @id @default(uuid()) @db.Uuid
   artistId        String      @map("artist_id") @db.Uuid
-  productId       String      @map("product_id") @db.Uuid
+  productId       String?     @map("product_id") @db.Uuid
   requesterName   String      @map("requester_name") @db.VarChar(100)
   requesterEmail  String      @map("requester_email") @db.VarChar(255)
   requesterPhone  String?     @map("requester_phone") @db.VarChar(20)
@@ -432,8 +432,8 @@ model MarketplaceQuoteRequest {
   createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz
   updatedAt       DateTime    @updatedAt @map("updated_at") @db.Timestamptz
 
-  artist  Artist             @relation(fields: [artistId], references: [id], onDelete: Cascade)
-  product MarketplaceProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  artist  Artist              @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  product MarketplaceProduct? @relation(fields: [productId], references: [id], onDelete: Cascade)
   images  QuoteImage[]
 
   @@index([artistId, status])

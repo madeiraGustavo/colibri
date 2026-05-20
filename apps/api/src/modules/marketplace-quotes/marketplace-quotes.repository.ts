@@ -6,7 +6,7 @@ import { prisma } from '../../lib/prisma.js'
  */
 export async function create(data: {
   artistId: string
-  productId: string
+  productId?: string
   requesterName: string
   requesterEmail: string
   requesterPhone?: string
@@ -69,7 +69,7 @@ export async function findAllByArtist(artistId: string, page: number, pageSize: 
         },
         images: {
           select: { id: true, url: true },
-          orderBy: { createdAt: 'asc' },
+          orderBy: { createdAt: 'asc' as const },
         },
       },
     }),

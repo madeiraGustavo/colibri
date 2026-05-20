@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const CreateQuoteSchema = z.object({
-  productId:      z.string().uuid(),
+  productId:      z.string().uuid().optional(),
   requesterName:  z.string().min(1).max(100),
   requesterEmail: z.string().email().max(255),
   requesterPhone: z.string().max(20).optional(),

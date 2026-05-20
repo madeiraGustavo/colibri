@@ -62,14 +62,36 @@ export async function createQuoteHandler(
     })
   }
 
-  // Verify product is active
-  const product = await prisma.marketplaceProduct.findFirst({
-    where: { id: parsed.data.productId, active: true },
-    select: { id: true, artistId: true },
-  })
+  // Verify product is active (if productId provided)
+  let artistId: string
+  if (parsed.data.productId) {
+    const product = await prisma.marketplaceProduct.findFirst({
+      where: { id: parsed.data.productId, active: true },
+      select: { id: true, artistId: true },
+    })
 
-  if (!product) {
-    return reply.code(422).send({ error: 'Produto não encontrado ou inativo' })
+    if (!product) {
+      return reply.code(422).send({ error: 'Produto não encontrado ou inativo' })
+    }
+    artistId = product.artistId
+  } else {
+    // Generic quote — use the default tenant's artist (admin)
+    const adminUser = await prisma.user.findFirst({
+      where: { siteId: request.tenantId, role: 'admin' },
+      select: { artistId: true },
+    })
+    if (!adminUser?.artistId) {
+      // Fallback: find any admin artist for this tenant
+      const anyArtist = await prisma.artist.findFirst({
+        select: { id: true },
+      })
+      artistId = anyArtist?.id ?? ''
+    } else {
+      artistId = adminUser.artistId
+    }
+    if (!artistId) {
+      return reply.code(500).send({ error: 'Configuração de tenant inválida' })
+    }
   }
 
   // Upload images to Supabase Storage
@@ -95,7 +117,7 @@ export async function createQuoteHandler(
   const message = sanitizeText(parsed.data.message)
 
   const quote = await repo.create({
-    artistId: product.artistId,
+    artistId,
     productId: parsed.data.productId,
     requesterName: parsed.data.requesterName,
     requesterEmail: parsed.data.requesterEmail,
