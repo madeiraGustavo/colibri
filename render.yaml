@@ -1,0 +1,42 @@
+# Render Blueprint — Colibri API (monorepo pnpm)
+# Docs: https://render.com/docs/infrastructure-as-code
+#
+# No painel Render, confira também:
+# - Health Check Path: /health
+# - Não defina PORT manualmente (Render injeta automaticamente)
+# - ALLOWED_ORIGINS deve incluir a URL do Vercel (ex.: https://colibri-web-lovat.vercel.app)
+
+services:
+  - type: web
+    name: colibri-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: >-
+      corepack enable &&
+      corepack prepare pnpm@9.15.4 --activate &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter @colibri/api exec prisma generate &&
+      pnpm --filter @colibri/api build
+    startCommand: pnpm --filter @colibri/api start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: STORAGE_BUCKET
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: DEFAULT_TENANT_ID
+        value: colibri
