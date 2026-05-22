@@ -12,7 +12,7 @@ const STORE_SITE_ID = 'marketplace'
 const PROTECTED_PATHS = ['/dashboard']
 
 /** Rotas da loja Colibri na raiz (sem prefixo /marketplace). */
-const STORE_PROTECTED_PATHS = ['/minha-conta']
+const STORE_PROTECTED_PATHS = ['/minha-conta', '/admin']
 
 const PROTECTED_API_PATHS = ['/api/dashboard', '/api/upload']
 
@@ -40,8 +40,8 @@ function hasValidRefreshCookie(req: NextRequest, siteId: string): boolean {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // ── Colibri store: /minha-conta na raiz ───────────────────────────────
-  if (STORE_PROTECTED_PATHS.includes(pathname)) {
+  // ── Colibri store: /minha-conta, /admin na raiz ───────────────────────
+  if (STORE_PROTECTED_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
     if (!hasValidRefreshCookie(req, STORE_SITE_ID)) {
       const loginUrl = new URL('/login', req.url)
       loginUrl.searchParams.set('redirect', pathname)

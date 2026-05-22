@@ -43,6 +43,9 @@ const nextConfig = {
       { source: '/categoria/:slug', destination: '/produtos/categoria/:slug', permanent: true },
       { source: '/category/:slug', destination: '/produtos/categoria/:slug', permanent: true },
       { source: '/register', destination: '/registro', permanent: true },
+      // Wave 5: legacy dashboard admin → /admin (removed in wave-7-cleanup)
+      { source: '/dashboard/marketplace', destination: '/admin', permanent: false },
+      { source: '/dashboard/marketplace/:path*', destination: '/admin/:path*', permanent: false },
     ]
   },
 }

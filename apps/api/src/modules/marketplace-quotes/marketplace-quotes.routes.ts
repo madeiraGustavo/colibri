@@ -1,5 +1,5 @@
 import type { FastifyInstance, RouteHandlerMethod } from 'fastify'
-import { authenticate } from '../../hooks/authenticate.js'
+import { authenticateAdmin } from '../../hooks/authenticate.js'
 import {
   createQuoteHandler,
   listQuotesHandler,
@@ -17,8 +17,8 @@ export async function marketplaceQuotesRoutes(fastify: FastifyInstance): Promise
   }, createQuoteHandler)
 
   // Private (authenticated)
-  fastify.get('/dashboard/marketplace/quotes', { preHandler: authenticate }, listQuotesHandler)
-  fastify.get('/dashboard/marketplace/quotes/:id', { preHandler: authenticate }, getQuoteHandler as RouteHandlerMethod)
-  fastify.patch('/dashboard/marketplace/quotes/:id/status', { preHandler: authenticate }, updateQuoteStatusHandler as RouteHandlerMethod)
-  fastify.delete('/dashboard/marketplace/quotes/:id', { preHandler: authenticate }, deleteQuoteHandler as RouteHandlerMethod)
+  fastify.get('/dashboard/marketplace/quotes', { preHandler: authenticateAdmin }, listQuotesHandler)
+  fastify.get('/dashboard/marketplace/quotes/:id', { preHandler: authenticateAdmin }, getQuoteHandler as RouteHandlerMethod)
+  fastify.patch('/dashboard/marketplace/quotes/:id/status', { preHandler: authenticateAdmin }, updateQuoteStatusHandler as RouteHandlerMethod)
+  fastify.delete('/dashboard/marketplace/quotes/:id', { preHandler: authenticateAdmin }, deleteQuoteHandler as RouteHandlerMethod)
 }

@@ -8,7 +8,7 @@ import {
 import { generateProductSlug, sanitizeText, validateProductType } from './marketplace-products.service.js'
 import * as repo from './marketplace-products.repository.js'
 import { prisma } from '../../lib/prisma.js'
-import type { AuthContext } from '../../types/fastify.js'
+import { requireStoreArtistId } from '../../lib/store-artist.js'
 
 // ── POST /dashboard/marketplace/products ──────────────────────────────────────
 
@@ -16,7 +16,8 @@ export async function createProductHandler(
   request: FastifyRequest,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
 
   const parsed = CreateProductSchema.safeParse(request.body)
   if (!parsed.success) {
@@ -79,7 +80,8 @@ export async function listProductsHandler(
   request: FastifyRequest,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
 
   const parsed = ListProductsQuerySchema.safeParse(request.query)
   if (!parsed.success) {
@@ -100,7 +102,8 @@ export async function getProductHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   const product = await repo.findById(id)
@@ -121,7 +124,8 @@ export async function updateProductHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   const product = await repo.findById(id)
@@ -199,7 +203,8 @@ export async function deleteProductHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   const product = await repo.findById(id)

@@ -1,0 +1,42 @@
+# Wave 5 — Admin / Task 6
+
+## Objetivo atual
+Finalizar o sistema admin protegido e preparar a branch para PR.
+
+## Pendências imediatas
+
+### Backend
+- [x] Seed: criar `Artist` com slug `colibri`
+- [x] Vincular admin ao `Artist` `colibri`
+- [x] Aplicar `resolveStoreArtistId` nos controllers:
+  - [x] categories
+  - [x] images
+  - [x] quotes
+
+### Frontend
+- [x] Criar UI `/admin/*`
+- [x] Implementar guard middleware para role `admin`
+- [x] Redirecionar `/dashboard/marketplace` para `/admin`
+
+### Validação
+- [x] Rodar `pnpm typecheck`
+- [x] Rodar `pnpm build`
+- [ ] Commitar alterações
+- [ ] Push da branch
+- [ ] Atualizar status da Task 6
+
+## Release
+- [ ] Abrir/mergear PR `wave-3-routes` → `main`
+- [ ] Abrir PR `wave-5-admin` após conclusão da Task 6
+
+## Próximas waves
+- Wave 7: observability — Pino, correlation IDs
+- Wave 8: remoção hub
+- Wave 9: remover redirects `/marketplace`
+- Wave 10: testes finais, deploy, docs
+- Wave 11: property-based tests — Phase 2
+
+## Ops
+- [ ] Popular catálogo via admin CRUD ou seed
+- [ ] Validar `ALLOWED_ORIGINS` entre Vercel e Render
+- [ ] Executar checklist staging pós-wave

@@ -1,5 +1,5 @@
 import type { FastifyInstance, RouteHandlerMethod } from 'fastify'
-import { authenticate } from '../../hooks/authenticate.js'
+import { authenticateAdmin } from '../../hooks/authenticate.js'
 import {
   createCategoryHandler,
   listCategoriesHandler,
@@ -10,10 +10,10 @@ import {
 
 export async function marketplaceCategoriesRoutes(fastify: FastifyInstance): Promise<void> {
   // Private (authenticated)
-  fastify.post('/dashboard/marketplace/categories', { preHandler: authenticate }, createCategoryHandler)
-  fastify.get('/dashboard/marketplace/categories', { preHandler: authenticate }, listCategoriesHandler)
-  fastify.patch('/dashboard/marketplace/categories/:id', { preHandler: authenticate }, updateCategoryHandler as RouteHandlerMethod)
-  fastify.delete('/dashboard/marketplace/categories/:id', { preHandler: authenticate }, deleteCategoryHandler as RouteHandlerMethod)
+  fastify.post('/dashboard/marketplace/categories', { preHandler: authenticateAdmin }, createCategoryHandler)
+  fastify.get('/dashboard/marketplace/categories', { preHandler: authenticateAdmin }, listCategoriesHandler)
+  fastify.patch('/dashboard/marketplace/categories/:id', { preHandler: authenticateAdmin }, updateCategoryHandler as RouteHandlerMethod)
+  fastify.delete('/dashboard/marketplace/categories/:id', { preHandler: authenticateAdmin }, deleteCategoryHandler as RouteHandlerMethod)
 
   // Public
   fastify.get('/marketplace/categories', listPublicCategoriesHandler)

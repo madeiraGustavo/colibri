@@ -1,12 +1,14 @@
 import { prisma } from '../../lib/prisma.js'
 import type { CreateCategoryBody, UpdateCategoryBody } from './marketplace-categories.schemas.js'
 
+const notDeleted = { deletedAt: null } as const
+
 /**
  * Retorna todas as categorias de um artista, ordenadas por sortOrder.
  */
 export async function findAllByArtist(artistId: string) {
   return prisma.marketplaceCategory.findMany({
-    where: { artistId },
+    where: { artistId, ...notDeleted },
     orderBy: { sortOrder: 'asc' },
     select: {
       id: true,
@@ -23,8 +25,8 @@ export async function findAllByArtist(artistId: string) {
  * Busca uma categoria pelo ID.
  */
 export async function findById(id: string) {
-  return prisma.marketplaceCategory.findUnique({
-    where: { id },
+  return prisma.marketplaceCategory.findFirst({
+    where: { id, ...notDeleted },
     select: { id: true, artistId: true, name: true, slug: true, icon: true, sortOrder: true },
   })
 }
@@ -60,11 +62,13 @@ export async function update(id: string, data: { name?: string; slug?: string; i
 }
 
 /**
- * Remove uma categoria.
+ * Soft delete de uma categoria.
  */
 export async function remove(id: string) {
-  return prisma.marketplaceCategory.delete({
+  return prisma.marketplaceCategory.update({
     where: { id },
+    data: { deletedAt: new Date() },
+    select: { id: true, deletedAt: true },
   })
 }
 
@@ -73,7 +77,7 @@ export async function remove(id: string) {
  */
 export async function hasProducts(categoryId: string): Promise<boolean> {
   const count = await prisma.marketplaceProduct.count({
-    where: { categoryId },
+    where: { categoryId, deletedAt: null },
   })
   return count > 0
 }
@@ -86,6 +90,7 @@ export async function findByArtistAndSlug(artistId: string, slug: string, exclud
     where: {
       artistId,
       slug,
+      ...notDeleted,
       ...(excludeId ? { id: { not: excludeId } } : {}),
     },
     select: { id: true },
@@ -98,8 +103,9 @@ export async function findByArtistAndSlug(artistId: string, slug: string, exclud
 export async function findPublicCategories() {
   return prisma.marketplaceCategory.findMany({
     where: {
+      ...notDeleted,
       products: {
-        some: { active: true },
+        some: { active: true, deletedAt: null },
       },
     },
     orderBy: { sortOrder: 'asc' },
