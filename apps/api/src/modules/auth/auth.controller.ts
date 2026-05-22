@@ -13,6 +13,7 @@ import jwt from 'jsonwebtoken'
 import { LoginSchema, RegisterSchema, RefreshSchema } from './auth.schema.js'
 import * as authService from './auth.service.js'
 import { env } from '../../env.js'
+import { logAuthAttempt } from '../../lib/ops-log.js'
 
 function getCookieOptions() {
   return {
@@ -51,8 +52,10 @@ export async function loginHandler(
     )
 
     reply.setCookie('refreshToken', refreshToken, getCookieOptions())
+    logAuthAttempt(request.log, 'login', 'success', { statusCode: 200 })
     return reply.code(200).send({ accessToken })
   } catch {
+    logAuthAttempt(request.log, 'login', 'failure', { statusCode: 401 })
     return reply.code(401).send({ error: 'Credenciais inválidas' })
   }
 }
@@ -77,12 +80,15 @@ export async function registerHandler(
     )
 
     reply.setCookie('refreshToken', refreshToken, getCookieOptions())
+    logAuthAttempt(request.log, 'register', 'success', { statusCode: 201 })
     return reply.code(201).send({ accessToken })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Erro ao registrar'
     if (message.includes('já cadastrado')) {
+      logAuthAttempt(request.log, 'register', 'failure', { statusCode: 409 })
       return reply.code(409).send({ error: message })
     }
+    logAuthAttempt(request.log, 'register', 'failure', { statusCode: 500 })
     return reply.code(500).send({ error: 'Erro interno' })
   }
 }
@@ -106,8 +112,10 @@ export async function refreshHandler(
   try {
     const { accessToken, refreshToken } = await authService.refresh(token)
     reply.setCookie('refreshToken', refreshToken, getCookieOptions())
+    logAuthAttempt(request.log, 'refresh', 'success', { statusCode: 200 })
     return reply.code(200).send({ accessToken })
   } catch {
+    logAuthAttempt(request.log, 'refresh', 'failure', { statusCode: 401 })
     return reply.code(401).send({ error: 'Refresh token inválido ou expirado' })
   }
 }
@@ -136,6 +144,7 @@ export async function logoutHandler(
 
   await authService.logout(userId)
   reply.clearCookie('refreshToken', { path: '/' })
+  logAuthAttempt(request.log, 'logout', 'success', { statusCode: 204 })
   return reply.code(204).send()
 }
 

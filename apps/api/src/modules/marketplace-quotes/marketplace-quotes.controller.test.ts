@@ -60,13 +60,29 @@ function makeReply(): FastifyReply {
   return { code, send } as unknown as FastifyReply
 }
 
+const mockLog = {
+  info: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn(),
+  debug: vi.fn(),
+  child: vi.fn().mockReturnThis(),
+}
+
 function makeRequest(
   user: { userId: string; artistId: string; role: string } | null,
   body: unknown = {},
   params: Record<string, string> = {},
   query: Record<string, string> = {},
 ): FastifyRequest {
-  return { user, body, params, query, isMultipart: () => false, tenantId: 'colibri' } as unknown as FastifyRequest
+  return {
+    user,
+    body,
+    params,
+    query,
+    log: mockLog,
+    isMultipart: () => false,
+    tenantId: 'colibri',
+  } as unknown as FastifyRequest
 }
 
 const ARTIST_A = { userId: 'user-001', artistId: 'artist-001', role: 'artist' }

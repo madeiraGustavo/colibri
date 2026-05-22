@@ -1,5 +1,6 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import { uploadMedia } from './upload.service.js'
+import { logUpload } from '../../lib/ops-log.js'
 
 /**
  * POST /upload
@@ -26,6 +27,13 @@ export async function uploadHandler(
 
   try {
     const result = await uploadMedia(request.user.artistId, { buffer, mimeType, size })
+    logUpload(request.log, {
+      route: '/upload',
+      outcome: 'success',
+      statusCode: 201,
+      mimeType,
+      sizeBytes: size,
+    })
     return reply.code(201).send(result)
   } catch (err: unknown) {
     const e = err as { statusCode?: number; message?: string }
@@ -34,6 +42,13 @@ export async function uploadHandler(
       ? (e.message ?? 'Erro no upload')
       : 'Erro interno do servidor'
 
+    logUpload(request.log, {
+      route: '/upload',
+      outcome: 'failure',
+      statusCode,
+      mimeType,
+      sizeBytes: size,
+    })
     return reply.code(statusCode).send({ error: message })
   }
 }
