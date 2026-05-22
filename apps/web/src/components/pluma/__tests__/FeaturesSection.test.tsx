@@ -7,8 +7,8 @@ describe('FeaturesSection', () => {
   })
 
   it('renders H2 "Menos planilhas. Mais clareza."', () => {
-    // Requirement 4.1
-    expect(screen.getByRole('heading', { level: 2, name: 'Menos planilhas. Mais clareza.' })).toBeInTheDocument()
+    // Requirement 4.1 — component renders uppercase via CSS
+    expect(screen.getByRole('heading', { level: 2, name: /menos planilhas\. mais clareza\./i })).toBeInTheDocument()
   })
 
   it('renders exactly 3 feature cards', () => {
