@@ -114,7 +114,7 @@ describe('JsonLd - buildBreadcrumbJsonLd', () => {
       items: [
         { name: 'Home', url: 'https://example.com' },
         { name: 'Início', url: 'https://example.com/' },
-        { name: 'Toldos', url: 'https://example.com/categoria/toldos' },
+        { name: 'Toldos', url: 'https://example.com/produtos/categoria/toldos' },
       ],
     })
 
@@ -124,7 +124,7 @@ describe('JsonLd - buildBreadcrumbJsonLd', () => {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://example.com' },
         { '@type': 'ListItem', position: 2, name: 'Início', item: 'https://example.com/' },
-        { '@type': 'ListItem', position: 3, name: 'Toldos', item: 'https://example.com/categoria/toldos' },
+        { '@type': 'ListItem', position: 3, name: 'Toldos', item: 'https://example.com/produtos/categoria/toldos' },
       ],
     })
   })

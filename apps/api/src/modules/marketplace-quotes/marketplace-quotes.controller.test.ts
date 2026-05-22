@@ -17,11 +17,37 @@ vi.mock('./marketplace-quotes.repository.js', () => ({
   findAllByArtist: vi.fn(),
   findById: vi.fn(),
   updateStatus: vi.fn(),
+  softDelete: vi.fn(),
 }))
 
 vi.mock('../../lib/prisma.js', () => ({
   prisma: {
     marketplaceProduct: { findFirst: vi.fn() },
+    user: { findFirst: vi.fn() },
+    artist: { findFirst: vi.fn() },
+  },
+}))
+
+vi.mock('../../lib/storage.js', () => ({
+  uploadFile: vi.fn(),
+  deleteFile: vi.fn(),
+  createSignedUrl: vi.fn(),
+}))
+
+vi.mock('../../lib/validateMime.js', () => ({
+  validateMime: vi.fn().mockReturnValue(true),
+}))
+
+vi.mock('../../env.js', () => ({
+  env: {
+    STORAGE_BUCKET: 'test-bucket',
+    SUPABASE_URL: 'https://test.supabase.co',
+    DATABASE_URL: 'postgresql://test',
+    JWT_SECRET: 'a'.repeat(32),
+    JWT_REFRESH_SECRET: 'b'.repeat(32),
+    ALLOWED_ORIGINS: 'http://localhost:3000',
+    SUPABASE_SERVICE_ROLE_KEY: 'test-key',
+    PORT: 3001,
   },
 }))
 
@@ -40,7 +66,7 @@ function makeRequest(
   params: Record<string, string> = {},
   query: Record<string, string> = {},
 ): FastifyRequest {
-  return { user, body, params, query } as unknown as FastifyRequest
+  return { user, body, params, query, isMultipart: () => false, tenantId: 'colibri' } as unknown as FastifyRequest
 }
 
 const ARTIST_A = { userId: 'user-001', artistId: 'artist-001', role: 'artist' }

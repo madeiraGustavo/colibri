@@ -52,7 +52,7 @@ export function MarketplaceFooter() {
               {siteConfig.categories.map((cat) => (
                 <li key={cat}>
                   <a
-                    href={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`}
+                    href={`/produtos/categoria/${cat.toLowerCase().replace(/\s+/g, '-')}`}
                     className="mp-footer-link text-sm"
                     style={{ color: 'var(--mp-text-muted)' }}
                   >

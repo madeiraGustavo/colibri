@@ -39,7 +39,7 @@ describe('Breadcrumb', () => {
   it('renders links for items with href', () => {
     const items: BreadcrumbItem[] = [
       { label: 'Início', href: '/' },
-      { label: 'Categoria', href: '/categoria/toldos' },
+      { label: 'Categoria', href: '/produtos/categoria/toldos' },
       { label: 'Produto Atual' },
     ]
     render(<Breadcrumb items={items} />)
@@ -48,7 +48,7 @@ describe('Breadcrumb', () => {
     expect(homeLink).toHaveAttribute('href', '/')
 
     const categoryLink = screen.getByRole('link', { name: 'Categoria' })
-    expect(categoryLink).toHaveAttribute('href', '/categoria/toldos')
+    expect(categoryLink).toHaveAttribute('href', '/produtos/categoria/toldos')
   })
 
   it('renders last item as non-clickable span with aria-current="page"', () => {
@@ -70,7 +70,7 @@ describe('Breadcrumb', () => {
   it('renders separator between items', () => {
     const items: BreadcrumbItem[] = [
       { label: 'Início', href: '/' },
-      { label: 'Categoria', href: '/categoria/toldos' },
+      { label: 'Categoria', href: '/produtos/categoria/toldos' },
       { label: 'Produto' },
     ]
     const { container } = render(<Breadcrumb items={items} />)

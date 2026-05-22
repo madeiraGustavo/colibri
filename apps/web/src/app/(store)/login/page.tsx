@@ -1,17 +1,17 @@
 import { SITES } from '@/lib/sites'
 import { AuthLayout } from '@/components/auth/AuthLayout'
-import { RegisterForm } from '@/components/auth/RegisterForm'
+import { LoginForm } from '@/components/auth/LoginForm'
 
 const site = SITES.marketplace!
 
 export const metadata = {
-  title: `Criar conta — ${site.displayName}`,
+  title: `Login — ${site.displayName}`,
 }
 
-export default function MarketplaceRegisterPage() {
+export default function LoginPage() {
   return (
     <AuthLayout site={site}>
-      <RegisterForm site={site} />
+      <LoginForm site={site} />
     </AuthLayout>
   )
 }

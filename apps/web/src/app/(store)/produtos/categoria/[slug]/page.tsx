@@ -5,7 +5,6 @@ import { siteConfig } from '@/config/site'
 import { Breadcrumb } from '@/components/marketplace/Breadcrumb'
 import { BreadcrumbJsonLd } from '@/components/marketplace/JsonLd'
 import { ProductCard } from '@/components/marketplace/ProductCard'
-import { PaginationControls } from '@/components/marketplace/PaginationControls'
 import { EmptyState } from '@/components/marketplace/EmptyState'
 import { CategoryPageClient } from './CategoryPageClient'
 
@@ -38,7 +37,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         icon="category"
         title="Categoria não encontrada"
         description="A categoria que você procura não existe ou foi removida."
-        action={{ label: 'Voltar ao catálogo', href: '/marketplace' }}
+        action={{ label: 'Voltar ao catálogo', href: '/' }}
       />
     )
   }
@@ -48,24 +47,22 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   const pagination = productsRes.pagination
 
   const breadcrumbItems = [
-    { label: 'Marketplace', href: '/marketplace' },
+    { label: 'Início', href: '/' },
+    { label: 'Produtos', href: '/produtos' },
     { label: category.name },
   ]
 
   return (
     <>
-      {/* Structured Data */}
       <BreadcrumbJsonLd
         items={[
-          { name: siteConfig.name, url: `https://${siteConfig.domain}/marketplace` },
-          { name: category.name, url: `https://${siteConfig.domain}/marketplace/category/${category.slug}` },
+          { name: siteConfig.name, url: `https://${siteConfig.domain}/` },
+          { name: category.name, url: `https://${siteConfig.domain}/produtos/categoria/${category.slug}` },
         ]}
       />
 
-      {/* Breadcrumb */}
       <Breadcrumb items={breadcrumbItems} />
 
-      {/* Page Header */}
       <div className="mb-8">
         <h1 className="mp-heading-2">{category.name}</h1>
         {category.description && (
@@ -75,13 +72,12 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         )}
       </div>
 
-      {/* Products */}
       {products.length === 0 ? (
         <EmptyState
           icon="category"
           title="Nenhum produto nesta categoria"
           description="Ainda não há produtos disponíveis nesta categoria. Explore outras categorias."
-          action={{ label: 'Ver catálogo completo', href: '/marketplace' }}
+          action={{ label: 'Ver catálogo completo', href: '/produtos' }}
         />
       ) : (
         <>

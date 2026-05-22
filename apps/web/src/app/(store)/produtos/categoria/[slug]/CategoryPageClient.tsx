@@ -13,7 +13,7 @@ export function CategoryPageClient({ currentPage, totalPages, categorySlug }: Ca
   const router = useRouter()
 
   function handlePageChange(page: number) {
-    router.push(`/categoria/${categorySlug}?page=${page}`)
+    router.push(`/produtos/categoria/${categorySlug}?page=${page}`)
   }
 
   return (

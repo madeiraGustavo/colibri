@@ -3,7 +3,9 @@ import { authenticate } from '../../hooks/authenticate.js'
 import {
   createQuoteHandler,
   listQuotesHandler,
+  getQuoteHandler,
   updateQuoteStatusHandler,
+  deleteQuoteHandler,
 } from './marketplace-quotes.controller.js'
 
 export async function marketplaceQuotesRoutes(fastify: FastifyInstance): Promise<void> {
@@ -16,5 +18,7 @@ export async function marketplaceQuotesRoutes(fastify: FastifyInstance): Promise
 
   // Private (authenticated)
   fastify.get('/dashboard/marketplace/quotes', { preHandler: authenticate }, listQuotesHandler)
+  fastify.get('/dashboard/marketplace/quotes/:id', { preHandler: authenticate }, getQuoteHandler as RouteHandlerMethod)
   fastify.patch('/dashboard/marketplace/quotes/:id/status', { preHandler: authenticate }, updateQuoteStatusHandler as RouteHandlerMethod)
+  fastify.delete('/dashboard/marketplace/quotes/:id', { preHandler: authenticate }, deleteQuoteHandler as RouteHandlerMethod)
 }

@@ -35,7 +35,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const breadcrumbItems = [
     { label: 'Início', href: '/' },
     ...(product.category
-      ? [{ label: product.category.name, href: `/categoria/${product.category.slug}` }]
+      ? [{ label: product.category.name, href: `/produtos/categoria/${product.category.slug}` }]
       : []),
     { label: product.title },
   ]
@@ -55,7 +55,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         items={[
           { name: siteConfig.name, url: `https://${siteConfig.domain}/` },
           ...(product.category
-            ? [{ name: product.category.name, url: `https://${siteConfig.domain}/categoria/${product.category.slug}` }]
+            ? [{ name: product.category.name, url: `https://${siteConfig.domain}/produtos/categoria/${product.category.slug}` }]
             : []),
           { name: product.title, url: `https://${siteConfig.domain}/produtos/${product.slug}` },
         ]}

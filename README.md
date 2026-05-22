@@ -125,7 +125,7 @@ Copie `.env.example` para `.env` e preencha os valores. Variáveis principais:
 | `DATABASE_URL` | Connection string do PostgreSQL |
 | `SUPABASE_URL` | URL do projeto Supabase |
 | `SUPABASE_ANON_KEY` | Chave anônima do Supabase |
-| `SUPABASE_SERVICE_KEY` | Chave de serviço do Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Chave de serviço do Supabase (service role) |
 | `JWT_SECRET` | Segredo para assinar tokens JWT |
 | `JWT_REFRESH_SECRET` | Segredo para refresh tokens |
 | `ALLOWED_ORIGINS` | Origens permitidas para CORS |
@@ -138,17 +138,21 @@ Consulte `.env.example` para a lista completa com valores de exemplo.
 | Serviço | Plataforma | Configuração |
 |---------|-----------|--------------|
 | **Web** | Vercel | Framework: Next.js, Root: `apps/web` |
-| **API** | Railway | Start command: `node dist/server.js`, Root: `apps/api` |
+| **API** | Render (ou Railway) | Start: `pnpm --filter @colibri/api start`, Root: monorepo (ver `render.yaml`) |
 | **Banco** | Supabase | PostgreSQL gerenciado |
 | **Storage** | Supabase | Buckets para uploads de imagens |
 
-### Deploy da API (Railway)
+### Deploy da API (Render)
 
-1. Conecte o repositório ao Railway
-2. Configure o root directory como `apps/api`
-3. Build command: `pnpm build`
-4. Start command: `pnpm start`
-5. Adicione as variáveis de ambiente
+1. Conecte o repositório ao [Render](https://render.com) (ou use o blueprint `render.yaml`)
+2. **Root directory:** raiz do monorepo (`.`), não apenas `apps/api`
+3. Build: `pnpm install`, `prisma generate`, `pnpm --filter @colibri/api build` (ver `render.yaml`)
+4. Start: `pnpm --filter @colibri/api start`
+5. Health check: `/health`
+6. **Não** defina `PORT` manualmente — o Render injeta a porta
+7. Variáveis: ver `docs/deploy-render.md` e `.env.example`
+
+Guia completo de troubleshooting Railway → Render: `docs/deploy-render.md`
 
 ### Deploy do Web (Vercel)
 
