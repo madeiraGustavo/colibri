@@ -43,6 +43,7 @@ Contexto mínimo para continuidade em novos chats. Atualizar ao fechar cada wave
 | Orçamentos: API `marketplace-quotes`, `/orcamento`, soft delete quotes | ✅ (`wave-4-quotes`) |
 | Deploy Render + docs | ✅ |
 | Admin (Task 6) | ✅ (`wave-5-admin`) |
+| Observability (Pino, correlation IDs, ops logs) | ✅ (`wave-6-observability`) |
 
 **Admin (`wave-5-admin`):**
 
@@ -58,6 +59,7 @@ Contexto mínimo para continuidade em novos chats. Atualizar ao fechar cada wave
 | Branch | Conteúdo | Status |
 |--------|----------|--------|
 | **`main`** | **Waves 3–5 (rotas, orçamentos, admin)** | ✅ PR #3 mergeada; staging validado |
+| `wave-6-observability` | Pino, correlation IDs, ops logging | ✅ Concluída |
 | `wave-3-routes` | Histórico | Integrado em `main` |
 | `wave-4-quotes` | Histórico | Integrado em `main` |
 | `wave-5-admin` | Task 6 — admin | ✅ Concluída |
@@ -83,14 +85,13 @@ Contexto mínimo para continuidade em novos chats. Atualizar ao fechar cada wave
 
 ## Pendências principais
 
-**Próxima wave ativa:** Wave 7 — observability (`tasks.md`)
+**Próxima wave ativa:** Wave 7 — hub cleanup (`tasks.md`)
 
 **Próximas waves (`tasks.md`):**
 
-- **7** — observability (Pino, correlation IDs)
-- **8** — remoção hub
-- **9** — remover redirects `/marketplace`
-- **10** — testes finais, deploy, docs
-- **11** — property-based tests (Phase 2)
+- **7** — remoção hub
+- **8** — remover redirects `/marketplace`
+- **9** — testes finais, deploy, docs
+- **10** — property-based tests (Phase 2)
 
 **Ops:** popular catálogo (admin CRUD ou seed); validar `ALLOWED_ORIGINS` (Vercel ↔ Render); checklist staging pós-wave.
