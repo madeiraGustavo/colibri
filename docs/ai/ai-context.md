@@ -57,10 +57,10 @@ Contexto mínimo para continuidade em novos chats. Atualizar ao fechar cada wave
 
 | Branch | Conteúdo | Status |
 |--------|----------|--------|
-| `main` | Bootstrap antigo | Atrás das waves |
-| `wave-3-routes` | Rotas + merge quotes | Push feito; **PR → `main` pendente** |
-| `wave-4-quotes` | Orçamentos + fix Render | Integrado em `wave-3` |
-| **`wave-5-admin`** | **Task 6 — admin** | Pronta para PR (commit/push pendente) |
+| **`main`** | **Waves 3–5 (rotas, orçamentos, admin)** | ✅ PR #3 mergeada; staging validado |
+| `wave-3-routes` | Histórico | Integrado em `main` |
+| `wave-4-quotes` | Histórico | Integrado em `main` |
+| `wave-5-admin` | Task 6 — admin | ✅ Concluída |
 
 **`tasks.md`:** Tasks 1–4 ✅; Task 6–11 ❌ (Task 5 sem checkbox próprio; orçamentos implementados).
 
@@ -83,16 +83,7 @@ Contexto mínimo para continuidade em novos chats. Atualizar ao fechar cada wave
 
 ## Pendências principais
 
-**Imediato (`wave-5-admin`):**
-
-- Commit + push da branch; abrir PR `wave-5-admin`
-- Rodar seed em staging: `pnpm --filter @colibri/api seed`
-- Aplicar migration `015` no banco se ainda não aplicada
-
-**Integração / release:**
-
-- Abrir/mergear PR `wave-3-routes` → `main`
-- PR `wave-5-admin` após conclusão da Task 6
+**Próxima wave ativa:** Wave 7 — observability (`tasks.md`)
 
 **Próximas waves (`tasks.md`):**
 

@@ -21,13 +21,13 @@ Finalizar o sistema admin protegido e preparar a branch para PR.
 ### Validação
 - [x] Rodar `pnpm typecheck`
 - [x] Rodar `pnpm build`
-- [ ] Commitar alterações
-- [ ] Push da branch
-- [ ] Atualizar status da Task 6
+- [x] Commitar alterações
+- [x] Push da branch
+- [x] Atualizar status da Task 6
 
 ## Release
-- [ ] Abrir/mergear PR `wave-3-routes` → `main`
-- [ ] Abrir PR `wave-5-admin` após conclusão da Task 6
+- [x] Conteúdo integrado em `main` via PR #3 (inclui waves 3–5)
+- [x] Merge PR `wave-5-admin` → `main`
 
 ## Próximas waves
 - Wave 7: observability — Pino, correlation IDs
@@ -39,4 +39,4 @@ Finalizar o sistema admin protegido e preparar a branch para PR.
 ## Ops
 - [ ] Popular catálogo via admin CRUD ou seed
 - [ ] Validar `ALLOWED_ORIGINS` entre Vercel e Render
-- [ ] Executar checklist staging pós-wave
+- [x] Migration `015` + seed + smoke test admin em staging
