@@ -1,12 +1,14 @@
 import { prisma } from '../../lib/prisma.js'
 
+const notDeleted = { deletedAt: null } as const
+
 /**
  * Lista produtos do artista com paginação.
  */
 export async function findAllByArtist(artistId: string, page: number, pageSize: number) {
   const [data, total] = await Promise.all([
     prisma.marketplaceProduct.findMany({
-      where: { artistId },
+      where: { artistId, ...notDeleted },
       orderBy: [{ sortOrder: 'asc' }, { createdAt: 'desc' }],
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -29,7 +31,7 @@ export async function findAllByArtist(artistId: string, page: number, pageSize: 
         },
       },
     }),
-    prisma.marketplaceProduct.count({ where: { artistId } }),
+    prisma.marketplaceProduct.count({ where: { artistId, ...notDeleted } }),
   ])
 
   return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) }
@@ -39,8 +41,8 @@ export async function findAllByArtist(artistId: string, page: number, pageSize: 
  * Busca produto pelo ID (para ownership check).
  */
 export async function findById(id: string) {
-  return prisma.marketplaceProduct.findUnique({
-    where: { id },
+  return prisma.marketplaceProduct.findFirst({
+    where: { id, ...notDeleted },
     select: {
       id: true,
       artistId: true,
@@ -124,11 +126,13 @@ export async function update(id: string, data: Record<string, unknown>) {
 }
 
 /**
- * Remove um produto.
+ * Soft delete de um produto.
  */
 export async function remove(id: string) {
-  return prisma.marketplaceProduct.delete({
+  return prisma.marketplaceProduct.update({
     where: { id },
+    data: { deletedAt: new Date(), active: false },
+    select: { id: true, deletedAt: true },
   })
 }
 
@@ -141,7 +145,7 @@ export async function findPublicProducts(params: {
   categoryId?: string
   featured?: boolean
 }) {
-  const where: Record<string, unknown> = { active: true }
+  const where: Record<string, unknown> = { active: true, ...notDeleted }
   if (params.categoryId) where.categoryId = params.categoryId
   if (params.featured !== undefined) where.featured = params.featured
 
@@ -179,7 +183,7 @@ export async function findPublicProducts(params: {
  */
 export async function findPublicBySlug(slug: string) {
   return prisma.marketplaceProduct.findFirst({
-    where: { slug, active: true },
+    where: { slug, active: true, ...notDeleted },
     select: {
       id: true,
       slug: true,

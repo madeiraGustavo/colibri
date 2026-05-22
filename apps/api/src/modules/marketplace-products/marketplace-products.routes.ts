@@ -1,5 +1,5 @@
 import type { FastifyInstance, RouteHandlerMethod } from 'fastify'
-import { authenticate } from '../../hooks/authenticate.js'
+import { authenticateAdmin } from '../../hooks/authenticate.js'
 import {
   createProductHandler,
   listProductsHandler,
@@ -17,16 +17,16 @@ import {
 
 export async function marketplaceProductsRoutes(fastify: FastifyInstance): Promise<void> {
   // Private (authenticated)
-  fastify.post('/dashboard/marketplace/products', { preHandler: authenticate }, createProductHandler)
-  fastify.get('/dashboard/marketplace/products', { preHandler: authenticate }, listProductsHandler)
-  fastify.get('/dashboard/marketplace/products/:id', { preHandler: authenticate }, getProductHandler as RouteHandlerMethod)
-  fastify.patch('/dashboard/marketplace/products/:id', { preHandler: authenticate }, updateProductHandler as RouteHandlerMethod)
-  fastify.delete('/dashboard/marketplace/products/:id', { preHandler: authenticate }, deleteProductHandler as RouteHandlerMethod)
+  fastify.post('/dashboard/marketplace/products', { preHandler: authenticateAdmin }, createProductHandler)
+  fastify.get('/dashboard/marketplace/products', { preHandler: authenticateAdmin }, listProductsHandler)
+  fastify.get('/dashboard/marketplace/products/:id', { preHandler: authenticateAdmin }, getProductHandler as RouteHandlerMethod)
+  fastify.patch('/dashboard/marketplace/products/:id', { preHandler: authenticateAdmin }, updateProductHandler as RouteHandlerMethod)
+  fastify.delete('/dashboard/marketplace/products/:id', { preHandler: authenticateAdmin }, deleteProductHandler as RouteHandlerMethod)
 
   // Image endpoints (authenticated)
-  fastify.post('/dashboard/marketplace/products/:id/images', { preHandler: authenticate }, uploadImageHandler as RouteHandlerMethod)
-  fastify.patch('/dashboard/marketplace/products/:id/images/reorder', { preHandler: authenticate }, reorderImagesHandler as RouteHandlerMethod)
-  fastify.delete('/dashboard/marketplace/products/:id/images/:imageId', { preHandler: authenticate }, deleteImageHandler as RouteHandlerMethod)
+  fastify.post('/dashboard/marketplace/products/:id/images', { preHandler: authenticateAdmin }, uploadImageHandler as RouteHandlerMethod)
+  fastify.patch('/dashboard/marketplace/products/:id/images/reorder', { preHandler: authenticateAdmin }, reorderImagesHandler as RouteHandlerMethod)
+  fastify.delete('/dashboard/marketplace/products/:id/images/:imageId', { preHandler: authenticateAdmin }, deleteImageHandler as RouteHandlerMethod)
 
   // Public
   fastify.get('/marketplace/products', listPublicProductsHandler)

@@ -7,7 +7,7 @@
  * Tests:
  * 1. Same email in different tenants → independent accounts
  * 2. Login isolation — cross-tenant auth is impossible
- * 3. JWT/session contain correct siteId
+ * 3. JWT/session do not expose siteId (tenant resolved server-side)
  * 4. Admin bypasses site isolation
  * 5. Security — no user query without siteId
  */
@@ -103,11 +103,11 @@ describe('Property: Tenant Isolation — same email, different sites', () => {
             const result2 = await login(email, password, site2)
             const decoded2 = jwt.decode(result2.accessToken) as Record<string, unknown>
 
-            // INVARIANT: Different users, different siteIds in tokens
+            // INVARIANT: Different users; tokens must not expose siteId
             expect(decoded1.sub).toBe(userId1)
             expect(decoded2.sub).toBe(userId2)
-            expect(decoded1.siteId).toBe(site1)
-            expect(decoded2.siteId).toBe(site2)
+            expect(decoded1).not.toHaveProperty('siteId')
+            expect(decoded2).not.toHaveProperty('siteId')
             expect(decoded1.sub).not.toBe(decoded2.sub)
           },
         ),
@@ -153,13 +153,13 @@ describe('Property: Tenant Isolation — cross-tenant login fails', () => {
   )
 })
 
-// ─── Property 3: JWT always contains correct siteId ──────────────────────────
+// ─── Property 3: JWT does not expose siteId ───────────────────────────────────
 
-describe('Property: JWT siteId correctness', () => {
+describe('Property: JWT does not expose siteId', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it(
-    'accessToken siteId always matches the site used for login (100 iterations)',
+    'accessToken never includes siteId regardless of login site (100 iterations)',
     async () => {
       await fc.assert(
         fc.asyncProperty(
@@ -179,9 +179,9 @@ describe('Property: JWT siteId correctness', () => {
             const result = await login(email, password, siteId)
             const decoded = jwt.decode(result.accessToken) as Record<string, unknown>
 
-            // INVARIANT: Token siteId matches login site
-            expect(decoded.siteId).toBe(siteId)
+            expect(decoded).not.toHaveProperty('siteId')
             expect(decoded.sub).toBe(userId)
+            expect(findUserByEmailAndSite).toHaveBeenCalledWith(email, siteId)
           },
         ),
         { numRuns: 100 },
@@ -190,13 +190,13 @@ describe('Property: JWT siteId correctness', () => {
   )
 })
 
-// ─── Property 4: Session always returns correct siteId ───────────────────────
+// ─── Property 4: Session does not expose siteId ─────────────────────────────
 
-describe('Property: Session siteId correctness', () => {
+describe('Property: Session does not expose siteId', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it(
-    'getSession always returns the siteId stored in the user record (100 iterations)',
+    'getSession never includes siteId in the user payload (100 iterations)',
     async () => {
       await fc.assert(
         fc.asyncProperty(
@@ -213,8 +213,7 @@ describe('Property: Session siteId correctness', () => {
 
             const session = await getSession(userId)
 
-            // INVARIANT: Session siteId matches user record
-            expect(session.user.siteId).toBe(siteId)
+            expect(session.user).not.toHaveProperty('siteId')
             expect(session.user.id).toBe(userId)
             expect(session.user.email).toBe(email)
             expect(session.user.role).toBe(role)
@@ -256,8 +255,8 @@ describe('Property: Register isolation', () => {
             // INVARIANT: createUser called with correct siteId
             expect(createUser).toHaveBeenCalledWith(siteId, email, '$2a$12$hashed', 'client', undefined)
 
-            // INVARIANT: Token reflects the registration site
-            expect(decoded.siteId).toBe(siteId)
+            expect(decoded).not.toHaveProperty('siteId')
+            expect(decoded.sub).toBe(userId)
           },
         ),
         { numRuns: 100 },

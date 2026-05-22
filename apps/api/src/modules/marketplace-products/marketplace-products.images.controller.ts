@@ -4,7 +4,7 @@ import { prisma } from '../../lib/prisma.js'
 import { uploadFile, deleteFile } from '../../lib/storage.js'
 import { validateMime, SIZE_LIMITS } from '../../lib/validateMime.js'
 import * as repo from './marketplace-products.repository.js'
-import type { AuthContext } from '../../types/fastify.js'
+import { requireStoreArtistId } from '../../lib/store-artist.js'
 
 const BUCKET = 'marketplace-images'
 const MAX_IMAGES_PER_PRODUCT = 10
@@ -15,7 +15,8 @@ export async function uploadImageHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   // Ownership check
@@ -88,7 +89,8 @@ export async function reorderImagesHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   // Ownership check
@@ -124,7 +126,8 @@ export async function deleteImageHandler(
   request: FastifyRequest<{ Params: { id: string; imageId: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id, imageId } = request.params
 
   // Ownership check

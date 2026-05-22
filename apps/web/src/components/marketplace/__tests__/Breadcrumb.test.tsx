@@ -17,7 +17,7 @@ describe('Breadcrumb', () => {
 
   it('renders a nav element with aria-label="Breadcrumb"', () => {
     const items: BreadcrumbItem[] = [
-      { label: 'Marketplace', href: '/marketplace' },
+      { label: 'Início', href: '/' },
       { label: 'Produto' },
     ]
     render(<Breadcrumb items={items} />)
@@ -27,7 +27,7 @@ describe('Breadcrumb', () => {
 
   it('renders an ordered list (ol) inside the nav', () => {
     const items: BreadcrumbItem[] = [
-      { label: 'Marketplace', href: '/marketplace' },
+      { label: 'Início', href: '/' },
       { label: 'Categoria' },
     ]
     render(<Breadcrumb items={items} />)
@@ -38,22 +38,22 @@ describe('Breadcrumb', () => {
 
   it('renders links for items with href', () => {
     const items: BreadcrumbItem[] = [
-      { label: 'Marketplace', href: '/marketplace' },
-      { label: 'Categoria', href: '/marketplace/category/toldos' },
+      { label: 'Início', href: '/' },
+      { label: 'Categoria', href: '/produtos/categoria/toldos' },
       { label: 'Produto Atual' },
     ]
     render(<Breadcrumb items={items} />)
 
-    const marketplaceLink = screen.getByRole('link', { name: 'Marketplace' })
-    expect(marketplaceLink).toHaveAttribute('href', '/marketplace')
+    const homeLink = screen.getByRole('link', { name: 'Início' })
+    expect(homeLink).toHaveAttribute('href', '/')
 
     const categoryLink = screen.getByRole('link', { name: 'Categoria' })
-    expect(categoryLink).toHaveAttribute('href', '/marketplace/category/toldos')
+    expect(categoryLink).toHaveAttribute('href', '/produtos/categoria/toldos')
   })
 
   it('renders last item as non-clickable span with aria-current="page"', () => {
     const items: BreadcrumbItem[] = [
-      { label: 'Marketplace', href: '/marketplace' },
+      { label: 'Início', href: '/' },
       { label: 'Produto Atual' },
     ]
     render(<Breadcrumb items={items} />)
@@ -69,8 +69,8 @@ describe('Breadcrumb', () => {
 
   it('renders separator between items', () => {
     const items: BreadcrumbItem[] = [
-      { label: 'Marketplace', href: '/marketplace' },
-      { label: 'Categoria', href: '/marketplace/category/toldos' },
+      { label: 'Início', href: '/' },
+      { label: 'Categoria', href: '/produtos/categoria/toldos' },
       { label: 'Produto' },
     ]
     const { container } = render(<Breadcrumb items={items} />)
@@ -83,13 +83,13 @@ describe('Breadcrumb', () => {
   })
 
   it('renders single item as current page without separator', () => {
-    const items: BreadcrumbItem[] = [{ label: 'Marketplace' }]
+    const items: BreadcrumbItem[] = [{ label: 'Início' }]
     const { container } = render(<Breadcrumb items={items} />)
 
     const separators = container.querySelectorAll('[aria-hidden="true"]')
     expect(separators).toHaveLength(0)
 
-    const currentItem = screen.getByText('Marketplace')
+    const currentItem = screen.getByText('Início')
     expect(currentItem).toHaveAttribute('aria-current', 'page')
   })
 })

@@ -128,7 +128,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link
-      href={`/marketplace/product/${product.slug}`}
+      href={`/produtos/${product.slug}`}
       className="group block mp-card overflow-hidden"
     >
       {/* Image area */}

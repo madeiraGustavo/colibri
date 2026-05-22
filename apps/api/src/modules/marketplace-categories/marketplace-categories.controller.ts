@@ -2,7 +2,7 @@ import type { FastifyRequest, FastifyReply } from 'fastify'
 import { CreateCategorySchema, UpdateCategorySchema } from './marketplace-categories.schemas.js'
 import { generateSlug } from './marketplace-categories.service.js'
 import * as repo from './marketplace-categories.repository.js'
-import type { AuthContext } from '../../types/fastify.js'
+import { requireStoreArtistId } from '../../lib/store-artist.js'
 
 // ── POST /dashboard/marketplace/categories ────────────────────────────────────
 
@@ -10,7 +10,8 @@ export async function createCategoryHandler(
   request: FastifyRequest,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
 
   const parsed = CreateCategorySchema.safeParse(request.body)
   if (!parsed.success) {
@@ -44,7 +45,8 @@ export async function listCategoriesHandler(
   request: FastifyRequest,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
 
   const categories = await repo.findAllByArtist(artistId)
 
@@ -57,7 +59,8 @@ export async function updateCategoryHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   const category = await repo.findById(id)
@@ -104,7 +107,8 @@ export async function deleteCategoryHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   const category = await repo.findById(id)

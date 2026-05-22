@@ -79,13 +79,13 @@ describe('EmptyState', () => {
         icon="cart"
         title="Carrinho vazio"
         description="Seu carrinho está vazio"
-        action={{ label: 'Ver Catálogo', href: '/marketplace' }}
+        action={{ label: 'Ver Catálogo', href: '/' }}
       />
     )
 
     const link = screen.getByRole('link', { name: 'Ver Catálogo' })
     expect(link).toBeInTheDocument()
-    expect(link).toHaveAttribute('href', '/marketplace')
+    expect(link).toHaveAttribute('href', '/')
     expect(link).toHaveClass('mp-btn-primary')
   })
 

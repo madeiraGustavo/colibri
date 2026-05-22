@@ -1,0 +1,71 @@
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { fetchProduct, fetchCategories } from '@/lib/marketplace/api'
+import { generateProductMetadata } from '@/lib/marketplace/metadata'
+import { siteConfig } from '@/config/site'
+import { Breadcrumb } from '@/components/marketplace/Breadcrumb'
+import { ProductJsonLd, BreadcrumbJsonLd } from '@/components/marketplace/JsonLd'
+import { ProductDetailClient } from './ProductDetailClient'
+
+interface PageProps {
+  params: { slug: string }
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const product = await fetchProduct(params.slug)
+  if (!product) {
+    return { title: `Produto não encontrado | ${siteConfig.name}` }
+  }
+  return generateProductMetadata({
+    title: product.title,
+    shortDescription: product.shortDescription,
+    description: product.description,
+    thumbnailUrl: product.thumbnailUrl,
+    slug: product.slug,
+  })
+}
+
+export default async function ProductDetailPage({ params }: PageProps) {
+  const product = await fetchProduct(params.slug)
+
+  if (!product) {
+    notFound()
+  }
+
+  const breadcrumbItems = [
+    { label: 'Início', href: '/' },
+    ...(product.category
+      ? [{ label: product.category.name, href: `/produtos/categoria/${product.category.slug}` }]
+      : []),
+    { label: product.title },
+  ]
+
+  return (
+    <>
+      {/* Structured Data */}
+      <ProductJsonLd
+        name={product.title}
+        description={product.description ?? product.shortDescription ?? product.title}
+        image={product.images?.[0]?.url}
+        price={product.basePrice ?? undefined}
+        availability={product.stock === 0 ? 'OutOfStock' : 'InStock'}
+        brand={siteConfig.name}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: siteConfig.name, url: `https://${siteConfig.domain}/` },
+          ...(product.category
+            ? [{ name: product.category.name, url: `https://${siteConfig.domain}/produtos/categoria/${product.category.slug}` }]
+            : []),
+          { name: product.title, url: `https://${siteConfig.domain}/produtos/${product.slug}` },
+        ]}
+      />
+
+      {/* Breadcrumb */}
+      <Breadcrumb items={breadcrumbItems} />
+
+      {/* Product Detail (Client Component for interactivity) */}
+      <ProductDetailClient product={product} />
+    </>
+  )
+}

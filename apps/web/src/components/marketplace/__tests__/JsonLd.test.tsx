@@ -113,8 +113,8 @@ describe('JsonLd - buildBreadcrumbJsonLd', () => {
     const result = buildBreadcrumbJsonLd({
       items: [
         { name: 'Home', url: 'https://example.com' },
-        { name: 'Marketplace', url: 'https://example.com/marketplace' },
-        { name: 'Toldos', url: 'https://example.com/marketplace/category/toldos' },
+        { name: 'Início', url: 'https://example.com/' },
+        { name: 'Toldos', url: 'https://example.com/produtos/categoria/toldos' },
       ],
     })
 
@@ -123,8 +123,8 @@ describe('JsonLd - buildBreadcrumbJsonLd', () => {
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://example.com' },
-        { '@type': 'ListItem', position: 2, name: 'Marketplace', item: 'https://example.com/marketplace' },
-        { '@type': 'ListItem', position: 3, name: 'Toldos', item: 'https://example.com/marketplace/category/toldos' },
+        { '@type': 'ListItem', position: 2, name: 'Início', item: 'https://example.com/' },
+        { '@type': 'ListItem', position: 3, name: 'Toldos', item: 'https://example.com/produtos/categoria/toldos' },
       ],
     })
   })

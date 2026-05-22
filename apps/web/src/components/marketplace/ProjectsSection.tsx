@@ -81,7 +81,7 @@ export function ProjectsSection() {
             </p>
           </div>
           <Link
-            href="/marketplace"
+            href="/"
             style={{
               fontFamily: 'var(--mp-font-body)',
               fontWeight: 600,

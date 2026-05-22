@@ -350,9 +350,10 @@ model MarketplaceCategory {
   name      String   @db.VarChar(100)
   slug      String   @db.VarChar(120)
   icon      String?  @db.VarChar(50)
-  sortOrder Int      @default(0) @map("sort_order")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  sortOrder Int       @default(0) @map("sort_order")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
   artist   Artist               @relation(fields: [artistId], references: [id], onDelete: Cascade)
   products MarketplaceProduct[]
@@ -381,6 +382,7 @@ model MarketplaceProduct {
   material         String?     @db.VarChar(100)
   color            String?     @db.VarChar(50)
   sortOrder        Int         @default(0) @map("sort_order")
+  deletedAt        DateTime?   @map("deleted_at") @db.Timestamptz
   createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime    @updatedAt @map("updated_at") @db.Timestamptz
 

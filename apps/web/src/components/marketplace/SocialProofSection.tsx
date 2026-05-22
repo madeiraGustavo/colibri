@@ -173,7 +173,7 @@ export function SocialProofSection() {
               Paulo, sempre com foco em qualidade, durabilidade e acabamento impecável.
             </p>
             <a
-              href="/marketplace#categorias"
+              href="/#categorias"
               className="inline-flex items-center gap-1 mt-6 text-sm font-semibold"
               style={{ color: 'var(--mp-text-accent)' }}
             >

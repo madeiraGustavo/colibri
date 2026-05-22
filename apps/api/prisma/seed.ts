@@ -15,9 +15,11 @@ import { randomUUID } from 'crypto'
 const prisma = new PrismaClient()
 
 const DEFAULT_TENANT_ID = process.env.DEFAULT_TENANT_ID || 'colibri'
+const DEFAULT_STORE_ARTIST_SLUG = process.env.DEFAULT_STORE_ARTIST_SLUG || 'colibri'
 const ADMIN_EMAIL = 'admin@colibri.local'
 const ADMIN_PASSWORD = 'change-me'
 const SALT_ROUNDS = 12
+const STORE_ARTIST_NAME = 'Toldos Colibri'
 
 async function main() {
   console.log('🌱 Seeding Colibri database...')
@@ -50,6 +52,34 @@ async function main() {
   })
 
   console.log(`✓ Admin user upserted: ${admin.email} (siteId: ${DEFAULT_TENANT_ID})`)
+
+  // ── 2. Upsert store artist (single-store marketplace) ─────────────────────
+  const artist = await prisma.artist.upsert({
+    where: { slug: DEFAULT_STORE_ARTIST_SLUG },
+    update: {
+      userId: admin.id,
+      name: STORE_ARTIST_NAME,
+      isActive: true,
+    },
+    create: {
+      id: randomUUID(),
+      userId: admin.id,
+      name: STORE_ARTIST_NAME,
+      slug: DEFAULT_STORE_ARTIST_SLUG,
+      profileType: 'musician',
+      bio: [],
+      skills: [],
+      tools: [],
+      isActive: true,
+    },
+  })
+
+  await prisma.user.update({
+    where: { id: admin.id },
+    data: { artistId: artist.id },
+  })
+
+  console.log(`✓ Store artist upserted: ${artist.slug} (id: ${artist.id})`)
   console.log('')
   console.log('🎉 Seed complete!')
   console.log('')

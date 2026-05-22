@@ -7,7 +7,7 @@ import { uploadFile } from '../../lib/storage.js'
 import { validateMime } from '../../lib/validateMime.js'
 import { env } from '../../env.js'
 import { randomUUID } from 'crypto'
-import type { AuthContext } from '../../types/fastify.js'
+import { DEFAULT_STORE_ARTIST_SLUG, requireStoreArtistId } from '../../lib/store-artist.js'
 
 const MAX_IMAGES = 5
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
@@ -75,23 +75,14 @@ export async function createQuoteHandler(
     }
     artistId = product.artistId
   } else {
-    // Generic quote — use the default tenant's artist (admin)
-    const adminUser = await prisma.user.findFirst({
-      where: { siteId: request.tenantId, role: 'admin' },
-      select: { artistId: true },
+    const storeArtist = await prisma.artist.findFirst({
+      where: { slug: DEFAULT_STORE_ARTIST_SLUG, isActive: true },
+      select: { id: true },
     })
-    if (!adminUser?.artistId) {
-      // Fallback: find any admin artist for this tenant
-      const anyArtist = await prisma.artist.findFirst({
-        select: { id: true },
-      })
-      artistId = anyArtist?.id ?? ''
-    } else {
-      artistId = adminUser.artistId
+    if (!storeArtist) {
+      return reply.code(500).send({ error: 'Loja não configurada' })
     }
-    if (!artistId) {
-      return reply.code(500).send({ error: 'Configuração de tenant inválida' })
-    }
+    artistId = storeArtist.id
   }
 
   // Upload images to Supabase Storage
@@ -140,7 +131,8 @@ export async function listQuotesHandler(
   request: FastifyRequest,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
 
   const parsed = ListQuotesQuerySchema.safeParse(request.query)
   if (!parsed.success) {
@@ -164,7 +156,8 @@ export async function getQuoteHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   const quote = await repo.findById(id)
@@ -185,7 +178,8 @@ export async function updateQuoteStatusHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   const quote = await repo.findById(id)
@@ -230,7 +224,8 @@ export async function deleteQuoteHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ): Promise<void> {
-  const { artistId } = request.user as AuthContext
+  const artistId = await requireStoreArtistId(request, reply)
+  if (!artistId) return
   const { id } = request.params
 
   const quote = await repo.findById(id)

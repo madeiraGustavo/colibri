@@ -27,6 +27,14 @@ export async function authenticate(
   return authenticateRoles(['admin', 'artist', 'editor', 'client'])(request, reply)
 }
 
+/** Dashboard Colibri — apenas administradores. */
+export async function authenticateAdmin(
+  request: FastifyRequest,
+  reply: FastifyReply,
+): Promise<void> {
+  return authenticateRoles(['admin'])(request, reply)
+}
+
 /**
  * Factory que retorna um preHandler restrito a roles específicos.
  */

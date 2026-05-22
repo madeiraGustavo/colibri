@@ -139,7 +139,7 @@ export function MarketplaceHeader() {
           {NAV_CATEGORIES.map((cat) => (
             <a
               key={cat.slug}
-              href={`/category/${cat.slug}`}
+              href={`/produtos/categoria/${cat.slug}`}
               className="text-sm font-medium transition-colors duration-200 hover:opacity-80"
               style={{ color: 'var(--mp-text-secondary)' }}
             >
@@ -155,7 +155,7 @@ export function MarketplaceHeader() {
           </a>
           {isArtist && (
             <a
-              href="/dashboard/marketplace"
+              href="/admin"
               className="text-sm font-medium transition-colors duration-200 hover:opacity-80"
               style={{ color: 'var(--mp-text-secondary)' }}
             >
@@ -368,7 +368,7 @@ export function MarketplaceHeader() {
           {NAV_CATEGORIES.map((cat) => (
             <a
               key={cat.slug}
-              href={`/category/${cat.slug}`}
+              href={`/produtos/categoria/${cat.slug}`}
               className="flex items-center h-11 px-3 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-gray-100"
               style={{ color: 'var(--mp-text-default)' }}
               onClick={closeMobileMenu}
@@ -386,7 +386,7 @@ export function MarketplaceHeader() {
           </a>
           {isArtist && (
             <a
-              href="/dashboard/marketplace"
+              href="/admin"
               className="flex items-center h-11 px-3 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-gray-100"
               style={{ color: 'var(--mp-text-default)' }}
               onClick={closeMobileMenu}

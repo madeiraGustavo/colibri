@@ -1,0 +1,49 @@
+import type { MetadataRoute } from 'next'
+import { fetchProducts, fetchCategories } from '@/lib/marketplace/api'
+import { siteConfig } from '@/config/site'
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${siteConfig.domain}`
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [productsRes, categories] = await Promise.all([
+    fetchProducts({ pageSize: 50 }),
+    fetchCategories(),
+  ])
+
+  const staticPages: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1,
+    },
+    {
+      url: `${BASE_URL}/produtos`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/orcamento`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+  ]
+
+  const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
+    url: `${BASE_URL}/produtos/categoria/${category.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }))
+
+  const productPages: MetadataRoute.Sitemap = productsRes.data.map((product) => ({
+    url: `${BASE_URL}/produtos/${product.slug}`,
+    lastModified: product.updatedAt ? new Date(product.updatedAt) : new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
+  return [...staticPages, ...categoryPages, ...productPages]
+}

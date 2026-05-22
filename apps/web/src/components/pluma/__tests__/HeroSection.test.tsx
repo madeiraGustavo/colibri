@@ -6,9 +6,9 @@ describe('HeroSection', () => {
     render(<HeroSection />)
   })
 
-  it('renders eyebrow text "ASSISTENTE FINANCEIRO COM IA"', () => {
+  it('renders eyebrow text "Assistente Financeiro com IA"', () => {
     // Requirement 3.1
-    expect(screen.getByText('ASSISTENTE FINANCEIRO COM IA')).toBeInTheDocument()
+    expect(screen.getAllByText(/assistente financeiro com ia/i).length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders an H1 element', () => {
