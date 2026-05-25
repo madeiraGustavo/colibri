@@ -58,8 +58,8 @@ Contexto mínimo para continuidade em novos chats. Atualizar ao fechar cada wave
 
 | Branch | Conteúdo | Status |
 |--------|----------|--------|
-| **`main`** | **Waves 3–5 (rotas, orçamentos, admin)** | ✅ PR #3 mergeada; staging validado |
-| `wave-6-observability` | Pino, correlation IDs, ops logging | ✅ Concluída |
+| **`main`** | **Waves 3–6 (rotas, orçamentos, admin, observability)** | ✅ PR #4 mergeada; Render validado |
+| `wave-6-observability` | Histórico | Integrado em `main` |
 | `wave-3-routes` | Histórico | Integrado em `main` |
 | `wave-4-quotes` | Histórico | Integrado em `main` |
 | `wave-5-admin` | Task 6 — admin | ✅ Concluída |

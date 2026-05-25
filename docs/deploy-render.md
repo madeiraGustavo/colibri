@@ -83,6 +83,8 @@ Evite misturar URL de Transaction pooler com Prisma se aparecer erro de prepared
 ## Checklist pós-deploy
 
 - [ ] `GET /health` retorna 200
+- [ ] Header `X-Request-ID` na resposta (Wave 6): `node apps/api/scripts/verify-observability-remote.mjs https://SEU-SERVICO.onrender.com`
+- [ ] Logs JSON no painel com `requestId` e `event: http.request`
 - [ ] Login no site não retorna 503
 - [ ] `POST /marketplace/quotes` (formulário `/orcamento`) funciona
 - [ ] Upload de imagem (se testado) grava no Supabase Storage

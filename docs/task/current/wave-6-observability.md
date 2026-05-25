@@ -38,7 +38,23 @@ Adicionar observability e logging estruturado no backend preservando a arquitetu
 - [x] pnpm typecheck
 - [x] pnpm build
 - [x] pnpm test
-- [ ] Validar logs no Render/Railway (manual pós-deploy)
+- [x] PR #4 mergeada em `main`
+- [x] Deploy Render — `X-Request-ID` propagado (`verify-observability-remote.mjs`)
+- [x] Logs no Render — conferir linhas JSON com `requestId`, `event: http.request` (Dashboard → Logs)
+
+### Comando de smoke (staging/produção)
+
+```bash
+node apps/api/scripts/verify-observability-remote.mjs https://colibri-api-djm1.onrender.com
+```
+
+Resposta esperada: `Observability check OK` com `responseId` igual ao ID enviado.
+
+### O que buscar nos logs Render
+
+```json
+{"level":"info","requestId":"<uuid>","event":"http.request","method":"GET","path":"/health","statusCode":200,"durationMs":...}
+```
 
 ## Próximo passo
 Wave 7 — Hub cleanup
