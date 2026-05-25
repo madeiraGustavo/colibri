@@ -13,7 +13,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? ''
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const authHeader = req.headers.get('authorization') ?? ''
-  const siteId = req.headers.get('x-site-id') ?? 'platform'
+  const siteId = req.headers.get('x-site-id') ?? 'marketplace'
 
   let apiRes: Response
   try {

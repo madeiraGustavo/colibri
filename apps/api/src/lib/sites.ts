@@ -1,16 +1,11 @@
 /**
  * sites.ts
  *
- * Config estática de sites/tenants da plataforma Arte Hub.
- * Fonte da verdade para resolução de tenant no backend.
- *
- * Futuramente será migrada para tabela `sites` no banco.
- * A interface e funções públicas permanecerão as mesmas.
+ * Config estática do site Colibri (backend).
+ * O id `marketplace` é mantido por compatibilidade com cookies e X-Site-Id.
  */
 
 import type { FastifyRequest } from 'fastify'
-
-// ── Tipos ─────────────────────────────────────────────────────────────────────
 
 export interface SiteTheme {
   primaryColor: string
@@ -29,20 +24,7 @@ export interface SiteConfig {
   cookieName: string
 }
 
-// ── Config ────────────────────────────────────────────────────────────────────
-
 export const SITES: Record<string, SiteConfig> = {
-  platform: {
-    id: 'platform',
-    slug: 'platform',
-    displayName: 'Arte Hub',
-    theme: {
-      primaryColor: '#6C63FF',
-      gradientMain: 'linear-gradient(135deg, #6C63FF, #4ECDC4)',
-    },
-    authEnabled: true,
-    cookieName: 'ah_platform_refresh',
-  },
   marketplace: {
     id: 'marketplace',
     slug: 'marketplace',
@@ -54,31 +36,7 @@ export const SITES: Record<string, SiteConfig> = {
     authEnabled: true,
     cookieName: 'ah_marketplace_refresh',
   },
-  tattoo: {
-    id: 'tattoo',
-    slug: 'tattoo',
-    displayName: 'Studio Tattoo',
-    theme: {
-      primaryColor: '#111827',
-      secondaryColor: '#DC2626',
-    },
-    authEnabled: true,
-    cookieName: 'ah_tattoo_refresh',
-  },
-  music: {
-    id: 'music',
-    slug: 'music',
-    displayName: 'Arte Hub Music',
-    theme: {
-      primaryColor: '#6C63FF',
-      gradientMain: 'linear-gradient(135deg, #6C63FF, #4ECDC4)',
-    },
-    authEnabled: true,
-    cookieName: 'ah_music_refresh',
-  },
 }
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 export function getSiteBySlug(slug: string): SiteConfig | null {
   return SITES[slug] ?? null
@@ -88,17 +46,12 @@ export function getSiteById(id: string): SiteConfig | null {
   return SITES[id] ?? null
 }
 
-/** IDs válidos de site — útil para validação */
 export const VALID_SITE_IDS = Object.keys(SITES)
 
 /**
- * Resolve o site da request. Ordem de prioridade:
- * 1. Header X-Site-Id (definido pelo proxy Next.js — confiável)
- * 2. Fallback para 'platform'
- *
- * NUNCA confiar em valor enviado no body pelo cliente.
- * O header X-Site-Id é definido pelo proxy server-side do Next.js,
- * não pelo browser diretamente.
+ * Resolve o site da request. Ordem:
+ * 1. Header X-Site-Id (proxy Next.js)
+ * 2. Fallback marketplace (loja única)
  */
 export function resolveSiteFromRequest(req: FastifyRequest): SiteConfig {
   const headerSiteId = req.headers['x-site-id'] as string | undefined
@@ -107,6 +60,5 @@ export function resolveSiteFromRequest(req: FastifyRequest): SiteConfig {
     return SITES[headerSiteId]
   }
 
-  // Fallback seguro — nunca expõe dados de outros tenants
-  return SITES.platform
+  return SITES.marketplace
 }

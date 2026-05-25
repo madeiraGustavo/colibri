@@ -11,7 +11,7 @@ import { NextRequest, NextResponse } from 'next/server'
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? ''
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const siteId = req.headers.get('x-site-id') ?? 'platform'
+  const siteId = req.headers.get('x-site-id') ?? 'marketplace'
   const authHeader = req.headers.get('authorization') ?? ''
   const cookieHeader = req.headers.get('cookie') ?? ''
 

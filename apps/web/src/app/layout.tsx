@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { siteConfig } from '@/config/site'
-import { AudioProvider } from '@/components/AudioProvider'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -18,11 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body>
-        <AudioProvider>
-          {children}
-        </AudioProvider>
-      </body>
+      <body>{children}</body>
     </html>
   )
 }

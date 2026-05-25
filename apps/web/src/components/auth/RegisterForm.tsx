@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { SiteConfig } from '@/lib/sites'
+import { postAuthRedirectPath } from '@/lib/sites'
 import { setAccessToken } from '@/lib/api/client'
 
 interface RegisterFormProps {
@@ -36,9 +37,7 @@ export function RegisterForm({ site }: RegisterFormProps) {
       if (data.accessToken) {
         setAccessToken(data.accessToken)
       }
-      // Todos os tenants vão para área do cliente
-      const redirectTo = `/${site.slug}/minha-conta`
-      router.push(redirectTo)
+      router.push(postAuthRedirectPath(site))
       router.refresh()
     } else if (res.status === 409) {
       setError('Email já cadastrado neste site')

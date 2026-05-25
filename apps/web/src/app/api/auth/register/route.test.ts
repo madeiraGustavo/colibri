@@ -3,7 +3,7 @@
  *
  * Unit tests for POST /api/auth/register proxy route.
  *
- * Property 8: Site Resolution Fallback — proxy defaults to 'platform'
+ * Property 8: Site Resolution Fallback — proxy defaults to 'marketplace'
  * when X-Site-Id is missing.
  *
  * Validates: Requirements 3.1, 3.2, 3.3, 3.4, 4.4, 4.5, 5.5, 5.6
@@ -45,7 +45,7 @@ function makeInvalidJsonRequest(): NextRequest {
   })
 }
 
-function mockApiSuccess(siteId = 'platform') {
+function mockApiSuccess(siteId = 'marketplace') {
   mockFetch.mockResolvedValueOnce(
     new Response(JSON.stringify({ accessToken: 'tok', siteId }), {
       status: 201,
@@ -64,7 +64,7 @@ describe('POST /api/auth/register (proxy)', () => {
   // ── Property 8: Site Resolution Fallback ──────────────────────────────────
 
   describe('Property 8: Site Resolution Fallback', () => {
-    it('defaults X-Site-Id to "platform" when header is missing', async () => {
+    it('defaults X-Site-Id to "marketplace" when header is missing', async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.record({
@@ -82,7 +82,7 @@ describe('POST /api/auth/register (proxy)', () => {
             const url = callArgs[0] as string
             const options = callArgs[1] as { headers: Record<string, string> }
             expect(url).toContain('/auth/register')
-            expect(options.headers['X-Site-Id']).toBe('platform')
+            expect(options.headers['X-Site-Id']).toBe('marketplace')
           },
         ),
         { numRuns: 20 },
@@ -90,7 +90,7 @@ describe('POST /api/auth/register (proxy)', () => {
     })
 
     it('forwards valid X-Site-Id header to the backend', async () => {
-      const VALID_SITE_IDS = ['platform', 'marketplace', 'tattoo', 'music']
+      const VALID_SITE_IDS = ['marketplace']
 
       await fc.assert(
         fc.asyncProperty(
@@ -174,9 +174,9 @@ describe('POST /api/auth/register (proxy)', () => {
     })
 
     it('forwards Set-Cookie headers from API response', async () => {
-      const setCookieValue = 'ah_platform_refresh=token123; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800'
+      const setCookieValue = 'ah_marketplace_refresh=token123; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800'
       mockFetch.mockResolvedValueOnce(
-        new Response(JSON.stringify({ accessToken: 'tok', siteId: 'platform' }), {
+        new Response(JSON.stringify({ accessToken: 'tok', siteId: 'marketplace' }), {
           status: 201,
           headers: {
             'Content-Type': 'application/json',
@@ -187,7 +187,7 @@ describe('POST /api/auth/register (proxy)', () => {
 
       const req = makeRequest(
         { email: 'new@test.com', password: '123456' },
-        { 'X-Site-Id': 'platform' },
+        { 'X-Site-Id': 'marketplace' },
       )
       const res = await POST(req)
 
@@ -197,7 +197,7 @@ describe('POST /api/auth/register (proxy)', () => {
 
     it('returns 201 with accessToken and siteId on success', async () => {
       mockFetch.mockResolvedValueOnce(
-        new Response(JSON.stringify({ accessToken: 'jwt-token', siteId: 'tattoo' }), {
+        new Response(JSON.stringify({ accessToken: 'jwt-token', siteId: 'marketplace' }), {
           status: 201,
           headers: { 'Content-Type': 'application/json' },
         }),
@@ -205,14 +205,14 @@ describe('POST /api/auth/register (proxy)', () => {
 
       const req = makeRequest(
         { email: 'new@test.com', password: '123456' },
-        { 'X-Site-Id': 'tattoo' },
+        { 'X-Site-Id': 'marketplace' },
       )
       const res = await POST(req)
 
       expect(res.status).toBe(201)
       const data = await res.json()
       expect(data.accessToken).toBe('jwt-token')
-      expect(data.siteId).toBe('tattoo')
+      expect(data.siteId).toBe('marketplace')
     })
   })
 })

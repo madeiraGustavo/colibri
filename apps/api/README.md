@@ -47,20 +47,17 @@ As migrations SQL estão em `apps/api/migrations/` e são aplicadas via Prisma:
 pnpm prisma:migrate
 ```
 
-## Autenticação Multi-Tenant
+## Autenticação (loja única)
 
 ### Estratégia
 
-A identidade do usuário é definida pela chave composta `(siteId, email)` — o mesmo email pode existir em tenants diferentes sem conflito. O tenant é resolvido a partir do header `X-Site-Id` (definido pelo proxy server-side do Next.js, nunca pelo browser diretamente).
+A loja Colibri usa o site id `marketplace` (legado da migração) para cookies e header `X-Site-Id`. O proxy Next.js define o header; o fallback da API é `marketplace`.
 
-### Tenants configurados
+### Site configurado
 
 | Site ID | Cookie Name | Display Name |
 |---------|-------------|--------------|
-| `platform` | `ah_platform_refresh` | Arte Hub |
 | `marketplace` | `ah_marketplace_refresh` | Toldos Colibri |
-| `tattoo` | `ah_tattoo_refresh` | Studio Tattoo |
-| `music` | `ah_music_refresh` | Arte Hub Music |
 
 ### Cookies
 

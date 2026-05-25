@@ -1,34 +1,18 @@
 /**
- * middleware.ts
- *
- * Auth middleware — Colibri store (single-site) + legacy hub routes.
+ * middleware.ts — Auth da loja Colibri (rotas na raiz).
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { SITES, VALID_SITE_IDS } from '@/lib/sites'
+import { SITES } from '@/lib/sites'
 
 const STORE_SITE_ID = 'marketplace'
 
-const PROTECTED_PATHS = ['/dashboard']
-
-/** Rotas da loja Colibri na raiz (sem prefixo /marketplace). */
 const STORE_PROTECTED_PATHS = ['/minha-conta', '/admin']
 
-const PROTECTED_API_PATHS = ['/api/dashboard', '/api/upload']
+const PROTECTED_API_PATHS = ['/api/upload']
 
-function resolveSiteIdFromPath(pathname: string): string {
-  const segments = pathname.split('/').filter(Boolean)
-  const first = segments[0] ?? ''
-
-  if (VALID_SITE_IDS.includes(first)) {
-    return first
-  }
-
-  return 'platform'
-}
-
-function hasValidRefreshCookie(req: NextRequest, siteId: string): boolean {
-  const site = SITES[siteId]
+function hasValidRefreshCookie(req: NextRequest): boolean {
+  const site = SITES[STORE_SITE_ID]
   if (!site) return false
 
   if (req.cookies.has(site.cookieName)) return true
@@ -40,9 +24,8 @@ function hasValidRefreshCookie(req: NextRequest, siteId: string): boolean {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // ── Colibri store: /minha-conta, /admin na raiz ───────────────────────
   if (STORE_PROTECTED_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
-    if (!hasValidRefreshCookie(req, STORE_SITE_ID)) {
+    if (!hasValidRefreshCookie(req)) {
       const loginUrl = new URL('/login', req.url)
       loginUrl.searchParams.set('redirect', pathname)
       return NextResponse.redirect(loginUrl)
@@ -50,33 +33,10 @@ export function middleware(req: NextRequest) {
     return NextResponse.next()
   }
 
-  // ── Legacy hub: /{site}/minha-conta ───────────────────────────────────
-  const siteId = resolveSiteIdFromPath(pathname)
-
-  const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p))
-
-  if (isProtected && !hasValidRefreshCookie(req, siteId)) {
-    const loginUrl = new URL(`/${siteId}/login`, req.url)
-    loginUrl.searchParams.set('redirect', pathname)
-    return NextResponse.redirect(loginUrl)
-  }
-
-  const segments = pathname.split('/').filter(Boolean)
-  const isTenantProtected =
-    segments.length >= 2 &&
-    VALID_SITE_IDS.includes(segments[0] ?? '') &&
-    segments[1] === 'minha-conta'
-
-  if (isTenantProtected && !hasValidRefreshCookie(req, siteId)) {
-    const loginUrl = new URL(`/${siteId}/login`, req.url)
-    loginUrl.searchParams.set('redirect', pathname)
-    return NextResponse.redirect(loginUrl)
-  }
-
-  const isProtectedApi = PROTECTED_API_PATHS.some((p) => pathname.startsWith(p))
-
-  if (isProtectedApi && !hasValidRefreshCookie(req, siteId)) {
-    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+  if (PROTECTED_API_PATHS.some((p) => pathname.startsWith(p))) {
+    if (!hasValidRefreshCookie(req)) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
   }
 
   return NextResponse.next()

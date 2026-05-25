@@ -19,7 +19,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   // Repassa X-Site-Id do frontend para o backend
-  const siteId = req.headers.get('x-site-id') ?? 'platform'
+  const siteId = req.headers.get('x-site-id') ?? 'marketplace'
 
   let apiRes: Response
   try {

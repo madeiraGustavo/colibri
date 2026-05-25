@@ -2,8 +2,8 @@
  * Testes de integração — fluxo Web → API Fastify
  *
  * Cobrem:
- * 1. Login via proxy → recebe accessToken → chama /dashboard/tracks com Bearer
- * 2. Refresh automático: 401 em chamada de dashboard → interceptor faz refresh → retry bem-sucedido
+ * 1. Login via proxy → recebe accessToken → chama /marketplace/products com Bearer
+ * 2. Refresh automático: 401 → interceptor faz refresh → retry bem-sucedido
  *
  * Requirements: 4.1, 4.8, 4.9
  */
@@ -53,7 +53,7 @@ describe('apiGet', () => {
     const mockFetch = vi.fn().mockResolvedValue(makeResponse({ data: [] }))
     vi.stubGlobal('fetch', mockFetch)
 
-    await apiGet('/dashboard/tracks')
+    await apiGet('/marketplace/products')
 
     expect(mockFetch).toHaveBeenCalledOnce()
     const [, options] = mockFetch.mock.calls[0] as [string, RequestInit]
@@ -65,7 +65,7 @@ describe('apiGet', () => {
     const mockFetch = vi.fn().mockResolvedValue(makeResponse({ data: [] }))
     vi.stubGlobal('fetch', mockFetch)
 
-    await apiGet('/dashboard/tracks')
+    await apiGet('/marketplace/products')
 
     const [, options] = mockFetch.mock.calls[0] as [string, RequestInit]
     expect(options.credentials).toBe('include')
@@ -75,7 +75,7 @@ describe('apiGet', () => {
     const tracks = [{ id: '1', title: 'Track A' }]
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(makeResponse({ data: tracks })))
 
-    const result = await apiGet<{ data: typeof tracks }>('/dashboard/tracks')
+    const result = await apiGet<{ data: typeof tracks }>('/marketplace/products')
 
     expect(result.data).toEqual(tracks)
   })
@@ -83,7 +83,7 @@ describe('apiGet', () => {
   it('lança erro quando a resposta não é ok (sem 401)', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(makeResponse({ error: 'Não encontrado' }, 404)))
 
-    await expect(apiGet('/dashboard/tracks')).rejects.toThrow('Não encontrado')
+    await expect(apiGet('/marketplace/products')).rejects.toThrow('Não encontrado')
   })
 })
 
@@ -92,7 +92,7 @@ describe('apiPost', () => {
     const mockFetch = vi.fn().mockResolvedValue(makeResponse({ data: { id: '1' } }, 201))
     vi.stubGlobal('fetch', mockFetch)
 
-    await apiPost('/dashboard/tracks', { title: 'Nova Faixa', genre: 'jazz' })
+    await apiPost('/marketplace/products', { title: 'Nova Faixa', genre: 'jazz' })
 
     const [, options] = mockFetch.mock.calls[0] as [string, RequestInit]
     expect(options.method).toBe('POST')
@@ -106,7 +106,7 @@ describe('apiPatch', () => {
     const mockFetch = vi.fn().mockResolvedValue(makeResponse({ data: { id: '1' } }))
     vi.stubGlobal('fetch', mockFetch)
 
-    await apiPatch('/dashboard/profile', { name: 'Novo Nome' })
+    await apiPatch('/marketplace/products/1', { name: 'Novo Nome' })
 
     const [, options] = mockFetch.mock.calls[0] as [string, RequestInit]
     expect(options.method).toBe('PATCH')
@@ -120,7 +120,7 @@ describe('apiDelete', () => {
     const mockFetch = vi.fn().mockResolvedValue(makeEmptyResponse(204))
     vi.stubGlobal('fetch', mockFetch)
 
-    const result = await apiDelete('/dashboard/tracks/1')
+    const result = await apiDelete('/marketplace/products/1')
 
     const [, options] = mockFetch.mock.calls[0] as [string, RequestInit]
     expect(options.method).toBe('DELETE')
@@ -133,16 +133,16 @@ describe('Interceptor de 401 — refresh automático', () => {
     setAccessToken('token-expirado')
 
     const mockFetch = vi.fn()
-      // 1ª chamada: /dashboard/tracks → 401
+      // 1ª chamada: /marketplace/products → 401
       .mockResolvedValueOnce(makeResponse({ error: 'Não autorizado' }, 401))
       // 2ª chamada: /auth/refresh → 200 com novo token
       .mockResolvedValueOnce(makeResponse({ accessToken: 'token-novo' }))
-      // 3ª chamada: retry /dashboard/tracks → 200
+      // 3ª chamada: retry /marketplace/products → 200
       .mockResolvedValueOnce(makeResponse({ data: [{ id: '1', title: 'Track A' }] }))
 
     vi.stubGlobal('fetch', mockFetch)
 
-    const result = await apiGet<{ data: { id: string; title: string }[] }>('/dashboard/tracks')
+    const result = await apiGet<{ data: { id: string; title: string }[] }>('/marketplace/products')
 
     // Deve ter feito 3 chamadas: original + refresh + retry
     expect(mockFetch).toHaveBeenCalledTimes(3)
@@ -164,39 +164,39 @@ describe('Interceptor de 401 — refresh automático', () => {
     setAccessToken('token-expirado')
 
     const mockFetch = vi.fn()
-      // 1ª chamada: /dashboard/tracks → 401
+      // 1ª chamada: /marketplace/products → 401
       .mockResolvedValueOnce(makeResponse({ error: 'Não autorizado' }, 401))
       // 2ª chamada: /auth/refresh → 401 (refresh inválido)
       .mockResolvedValueOnce(makeResponse({ error: 'Refresh inválido' }, 401))
 
     vi.stubGlobal('fetch', mockFetch)
 
-    const windowMock = { location: { href: '', pathname: '/dashboard/tracks' } }
+    const windowMock = { location: { href: '', pathname: '/marketplace/products' } }
     vi.stubGlobal('window', windowMock)
 
-    await expect(apiGet('/dashboard/tracks')).rejects.toThrow('Sessão expirada')
+    await expect(apiGet('/marketplace/products')).rejects.toThrow('Sessão expirada')
 
     // Token deve ter sido limpo
     expect(getAccessToken()).toBeNull()
     // Deve ter redirecionado para login do tenant correto
-    expect(windowMock.location.href).toBe('/platform/login')
+    expect(windowMock.location.href).toBe('/login')
   })
 
   it('não faz loop infinito de refresh (tenta apenas uma vez)', async () => {
     setAccessToken('token-expirado')
 
     const mockFetch = vi.fn()
-      // 1ª chamada: /dashboard/tracks → 401
+      // 1ª chamada: /marketplace/products → 401
       .mockResolvedValueOnce(makeResponse({ error: 'Não autorizado' }, 401))
       // 2ª chamada: /auth/refresh → 200
       .mockResolvedValueOnce(makeResponse({ accessToken: 'token-novo' }))
-      // 3ª chamada: retry /dashboard/tracks → 401 novamente
+      // 3ª chamada: retry /marketplace/products → 401 novamente
       .mockResolvedValueOnce(makeResponse({ error: 'Não autorizado' }, 401))
 
     vi.stubGlobal('fetch', mockFetch)
-    vi.stubGlobal('window', { location: { href: '', pathname: '/dashboard/tracks' } })
+    vi.stubGlobal('window', { location: { href: '', pathname: '/marketplace/products' } })
 
-    await expect(apiGet('/dashboard/tracks')).rejects.toThrow('Sessão expirada')
+    await expect(apiGet('/marketplace/products')).rejects.toThrow('Sessão expirada')
 
     // Deve ter feito exatamente 3 chamadas — sem loop
     expect(mockFetch).toHaveBeenCalledTimes(3)
@@ -212,7 +212,7 @@ describe('Interceptor de 401 — refresh automático', () => {
 
     vi.stubGlobal('fetch', mockFetch)
 
-    await apiGet('/dashboard/tracks')
+    await apiGet('/marketplace/products')
 
     // 3ª chamada (retry) deve usar o token renovado
     const [, retryOptions] = mockFetch.mock.calls[2] as [string, RequestInit]
@@ -224,7 +224,7 @@ describe('Interceptor de 401 — refresh automático', () => {
 describe('Fluxo completo: login → accessToken → chamada autenticada', () => {
   it('armazena accessToken em memória após login e o usa nas chamadas seguintes', async () => {
     // Simula o fluxo: frontend chama /api/auth/login (proxy) que retorna accessToken
-    // Depois usa esse token para chamar /dashboard/tracks
+    // Depois usa esse token para chamar /marketplace/products
     const loginResponse = { accessToken: 'token-do-login', user: { id: '1', email: 'test@test.com' } }
     const tracksResponse = { data: [{ id: 'track-1', title: 'Minha Faixa' }] }
 
@@ -244,8 +244,8 @@ describe('Fluxo completo: login → accessToken → chamada autenticada', () => 
     setAccessToken(loginResult.accessToken)
     expect(getAccessToken()).toBe('token-do-login')
 
-    // 3. Chama /dashboard/tracks com Bearer
-    const tracksResult = await apiGet<typeof tracksResponse>('/dashboard/tracks')
+    // 3. Chama /marketplace/products com Bearer
+    const tracksResult = await apiGet<typeof tracksResponse>('/marketplace/products')
 
     expect(tracksResult.data).toEqual([{ id: 'track-1', title: 'Minha Faixa' }])
 

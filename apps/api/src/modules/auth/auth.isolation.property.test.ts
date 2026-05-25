@@ -53,7 +53,7 @@ import { verifyPassword } from '../../lib/password.js'
 import jwt from 'jsonwebtoken'
 
 // ── Valid site IDs for property generation ────────────────────────────────────
-const VALID_SITES = ['platform', 'marketplace', 'tattoo', 'music'] as const
+const VALID_SITES = ['marketplace'] as const
 type SiteId = typeof VALID_SITES[number]
 
 // ── Arbitraries ───────────────────────────────────────────────────────────────
@@ -64,7 +64,8 @@ const arbUserId = fc.uuid()
 
 // ─── Property 1: Same email, different sites → independent accounts ──────────
 
-describe('Property: Tenant Isolation — same email, different sites', () => {
+// Hub multi-site removed (wave-7); cross-site isolation is N/A for single store.
+describe.skip('Property: Tenant Isolation — same email, different sites', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it(
@@ -119,7 +120,7 @@ describe('Property: Tenant Isolation — same email, different sites', () => {
 
 // ─── Property 2: Cross-tenant login is impossible ────────────────────────────
 
-describe('Property: Tenant Isolation — cross-tenant login fails', () => {
+describe.skip('Property: Tenant Isolation — cross-tenant login fails', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it(
