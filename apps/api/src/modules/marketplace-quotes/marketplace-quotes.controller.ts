@@ -8,6 +8,7 @@ import { validateMime } from '../../lib/validateMime.js'
 import { env } from '../../env.js'
 import { randomUUID } from 'crypto'
 import { DEFAULT_STORE_ARTIST_SLUG, requireStoreArtistId } from '../../lib/store-artist.js'
+import { logQuoteSubmission } from '../../lib/ops-log.js'
 
 const MAX_IMAGES = 5
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
@@ -120,6 +121,12 @@ export async function createQuoteHandler(
     quantity: parsed.data.quantity,
     source: parsed.data.source,
     imageUrls: imageUrls.length > 0 ? imageUrls : undefined,
+  })
+
+  logQuoteSubmission(request.log, {
+    quoteId: quote.id,
+    productId: parsed.data.productId ?? null,
+    imageCount: imageUrls.length,
   })
 
   return reply.code(201).send({ data: quote })

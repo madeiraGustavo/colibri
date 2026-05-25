@@ -1,5 +1,8 @@
 import Fastify, { type FastifyInstance } from 'fastify'
+import { randomUUID } from 'crypto'
 import multipart      from '@fastify/multipart'
+import { buildLoggerOptions } from './lib/logger.js'
+import observabilityPlugin, { resolveIncomingRequestId } from './plugins/observability.js'
 import sensiblePlugin  from './plugins/sensible.js'
 import corsPlugin      from './plugins/cors.js'
 import rateLimitPlugin from './plugins/rateLimit.js'
@@ -15,9 +18,17 @@ import { marketplaceQuotesRoutes } from './modules/marketplace-quotes/marketplac
 import { marketplaceOrdersRoutes } from './modules/marketplace-orders/marketplace-orders.routes.js'
 
 export async function buildApp(): Promise<FastifyInstance> {
-  const fastify = Fastify({ logger: true })
+  const fastify = Fastify({
+    logger: buildLoggerOptions(),
+    disableRequestLogging: true,
+    requestIdHeader: 'x-request-id',
+    requestIdLogLabel: 'requestId',
+    genReqId: (request) =>
+      resolveIncomingRequestId(request.headers['x-request-id']) ?? randomUUID(),
+  })
 
-  // Plugins — ordem: sensible → cors → rateLimit → jwt → multipart → tenant
+  // Plugins — ordem: observability → sensible → cors → rateLimit → jwt → multipart → tenant
+  await fastify.register(observabilityPlugin)
   await fastify.register(sensiblePlugin)
   await fastify.register(corsPlugin)
   await fastify.register(rateLimitPlugin)
