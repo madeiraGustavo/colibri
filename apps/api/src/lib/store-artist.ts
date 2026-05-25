@@ -21,7 +21,7 @@ export async function resolvePublicStoreArtistId(): Promise<string | null> {
   const withProducts = await prisma.artist.findFirst({
     where: {
       isActive: true,
-      marketplaceProducts: { some: { active: true, deletedAt: null } },
+      marketplaceProducts: { some: { active: true } },
     },
     select: { id: true },
     orderBy: { createdAt: 'asc' },
