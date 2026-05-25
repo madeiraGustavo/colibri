@@ -26,6 +26,7 @@ describe('generateHomeMetadata', () => {
   it('includes canonical URL for root', () => {
     const meta = generateHomeMetadata()
     expect(meta.alternates?.canonical).toContain('/')
+    expect(meta.alternates?.canonical).not.toContain('/marketplace')
   })
 
   it('includes og:title and og:description', () => {
@@ -100,6 +101,7 @@ describe('generateProductMetadata', () => {
     expect(meta.alternates?.canonical).toContain(
       `/produtos/${product.slug}`
     )
+    expect(meta.alternates?.canonical).not.toContain('/marketplace')
   })
 
   it('includes og:image when thumbnailUrl is provided', () => {
@@ -161,6 +163,7 @@ describe('generateCategoryMetadata', () => {
     expect(meta.alternates?.canonical).toContain(
       `/produtos/categoria/${category.slug}`
     )
+    expect(meta.alternates?.canonical).not.toContain('/marketplace')
   })
 
   it('og:title and og:description match title and description', () => {
