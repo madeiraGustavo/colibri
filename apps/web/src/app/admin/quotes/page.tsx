@@ -11,7 +11,13 @@ interface Quote {
   message: string
   status: string
   createdAt: string
-  product: { id: string; title: string }
+  product: { id: string; title: string; slug?: string } | null
+}
+
+const GENERIC_QUOTE_PRODUCT_LABEL = 'Orçamento geral'
+
+function quoteProductLabel(product: Quote['product']): string {
+  return product?.title ?? GENERIC_QUOTE_PRODUCT_LABEL
 }
 
 interface Meta {
@@ -96,7 +102,7 @@ export default function AdminQuotesPage() {
                 {quote.status}
               </span>
             </div>
-            <p className="text-sm text-text-muted">Produto: {quote.product.title}</p>
+            <p className="text-sm text-text-muted">Produto: {quoteProductLabel(quote.product)}</p>
             <p className="text-sm text-text-default">{quote.message}</p>
             {quote.status === 'PENDING' && (
               <div className="flex gap-2 pt-2">
