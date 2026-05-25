@@ -27,23 +27,11 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // ── Temporary /marketplace → root redirects (Wave 4, removed in Wave 9) ──
-      { source: '/marketplace', destination: '/', permanent: true },
-      { source: '/marketplace/product/:slug', destination: '/produtos/:slug', permanent: true },
-      { source: '/marketplace/category/:slug', destination: '/produtos/categoria/:slug', permanent: true },
-      { source: '/marketplace/produtos', destination: '/produtos', permanent: true },
-      { source: '/marketplace/produtos/:slug', destination: '/produtos/:slug', permanent: true },
-      { source: '/marketplace/cart', destination: '/carrinho', permanent: true },
-      { source: '/marketplace/checkout', destination: '/checkout', permanent: true },
-      { source: '/marketplace/minha-conta', destination: '/minha-conta', permanent: true },
-      { source: '/marketplace/login', destination: '/login', permanent: true },
-      { source: '/marketplace/register', destination: '/registro', permanent: true },
-      { source: '/marketplace/orcamento', destination: '/orcamento', permanent: true },
-      // Legacy wave-3 paths → canonical
+      // Legacy wave-3 paths → canonical (store root)
       { source: '/categoria/:slug', destination: '/produtos/categoria/:slug', permanent: true },
       { source: '/category/:slug', destination: '/produtos/categoria/:slug', permanent: true },
       { source: '/register', destination: '/registro', permanent: true },
-      // Wave 5: legacy dashboard admin → /admin (removed in wave-7-cleanup)
+      // Wave 5: legacy dashboard admin UI → /admin
       { source: '/dashboard/marketplace', destination: '/admin', permanent: false },
       { source: '/dashboard/marketplace/:path*', destination: '/admin/:path*', permanent: false },
     ]
