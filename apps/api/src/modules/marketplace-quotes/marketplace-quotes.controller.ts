@@ -7,7 +7,7 @@ import { uploadFile } from '../../lib/storage.js'
 import { validateMime } from '../../lib/validateMime.js'
 import { env } from '../../env.js'
 import { randomUUID } from 'crypto'
-import { DEFAULT_STORE_ARTIST_SLUG, requireStoreArtistId } from '../../lib/store-artist.js'
+import { resolvePublicStoreArtistId, requireStoreArtistId } from '../../lib/store-artist.js'
 import { logQuoteSubmission } from '../../lib/ops-log.js'
 
 const MAX_IMAGES = 5
@@ -76,14 +76,12 @@ export async function createQuoteHandler(
     }
     artistId = product.artistId
   } else {
-    const storeArtist = await prisma.artist.findFirst({
-      where: { slug: DEFAULT_STORE_ARTIST_SLUG, isActive: true },
-      select: { id: true },
-    })
-    if (!storeArtist) {
+    const storeArtistId = await resolvePublicStoreArtistId()
+    if (!storeArtistId) {
+      request.log.error('Store artist not found — run prisma seed (slug: colibri)')
       return reply.code(500).send({ error: 'Loja não configurada' })
     }
-    artistId = storeArtist.id
+    artistId = storeArtistId
   }
 
   // Upload images to Supabase Storage

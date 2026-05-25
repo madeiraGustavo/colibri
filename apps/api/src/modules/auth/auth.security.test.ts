@@ -139,7 +139,7 @@ describe('Security: Authentication and RBAC', () => {
 })
 
 describe('Security: resolveSiteFromRequest behavior', () => {
-  it('invalid X-Site-Id header falls back to platform', async () => {
+  it('invalid X-Site-Id header falls back to marketplace', async () => {
     const { resolveSiteFromRequest: realResolve } = await vi.importActual<typeof import('../../lib/sites.js')>('../../lib/sites.js')
 
     const fakeReq = {
@@ -147,10 +147,10 @@ describe('Security: resolveSiteFromRequest behavior', () => {
     } as unknown as FastifyRequest
 
     const site = realResolve(fakeReq)
-    expect(site.id).toBe('platform')
+    expect(site.id).toBe('marketplace')
   })
 
-  it('missing X-Site-Id header falls back to platform', async () => {
+  it('missing X-Site-Id header falls back to marketplace', async () => {
     const { resolveSiteFromRequest: realResolve } = await vi.importActual<typeof import('../../lib/sites.js')>('../../lib/sites.js')
 
     const fakeReq = {
@@ -158,7 +158,7 @@ describe('Security: resolveSiteFromRequest behavior', () => {
     } as unknown as FastifyRequest
 
     const site = realResolve(fakeReq)
-    expect(site.id).toBe('platform')
+    expect(site.id).toBe('marketplace')
   })
 
   it('valid X-Site-Id header returns correct site', async () => {

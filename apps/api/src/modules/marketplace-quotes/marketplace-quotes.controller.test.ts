@@ -122,6 +122,53 @@ describe('createQuoteHandler', () => {
     expect(repo.create).not.toHaveBeenCalled()
   })
 
+  it('retorna 201 ao criar orçamento sem productId (página /orcamento)', async () => {
+    vi.mocked(prisma.artist.findFirst)
+      .mockResolvedValueOnce({ id: 'artist-colibri' } as any)
+    vi.mocked(repo.create).mockResolvedValue({
+      id: 'quote-2',
+      status: 'PENDING',
+      createdAt: new Date(),
+    } as any)
+
+    const request = makeRequest(null, {
+      requesterName: 'Maria',
+      requesterEmail: 'maria@test.com',
+      requesterPhone: '11999999999',
+      city: 'São Paulo',
+      message: 'Preciso de toldo 4x3',
+      quantity: 1,
+      source: 'orcamento-page',
+    })
+    const reply = makeReply()
+
+    await createQuoteHandler(request, reply)
+
+    expect(reply.code).toHaveBeenCalledWith(201)
+    expect(repo.create).toHaveBeenCalledWith(
+      expect.objectContaining({ artistId: 'artist-colibri' }),
+    )
+  })
+
+  it('retorna 500 quando loja (artista) não está configurada', async () => {
+    vi.mocked(prisma.artist.findFirst).mockResolvedValue(null)
+
+    const request = makeRequest(null, {
+      requesterName: 'Maria',
+      requesterEmail: 'maria@test.com',
+      requesterPhone: '11999999999',
+      city: 'São Paulo',
+      message: 'Orçamento',
+      quantity: 1,
+    })
+    const reply = makeReply()
+
+    await createQuoteHandler(request, reply)
+
+    expect(reply.code).toHaveBeenCalledWith(500)
+    expect(repo.create).not.toHaveBeenCalled()
+  })
+
   it('retorna 201 ao criar orçamento com sucesso', async () => {
     vi.mocked(prisma.marketplaceProduct.findFirst).mockResolvedValue({
       id: 'prod-1',

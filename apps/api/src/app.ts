@@ -10,8 +10,6 @@ import jwtPlugin       from './plugins/jwt.js'
 import tenantPlugin    from './middleware/tenant.js'
 import { authRoutes }     from './modules/auth/auth.routes.js'
 import { uploadRoutes }           from './modules/upload/upload.routes.js'
-import { availabilityRoutes }     from './modules/availability/availability.routes.js'
-import { appointmentsRoutes }     from './modules/appointments/appointments.routes.js'
 import { marketplaceCategoriesRoutes } from './modules/marketplace-categories/marketplace-categories.routes.js'
 import { marketplaceProductsRoutes } from './modules/marketplace-products/marketplace-products.routes.js'
 import { marketplaceQuotesRoutes } from './modules/marketplace-quotes/marketplace-quotes.routes.js'
@@ -42,8 +40,6 @@ export async function buildApp(): Promise<FastifyInstance> {
   // Rotas
   await fastify.register(authRoutes)
   await fastify.register(uploadRoutes)
-  await fastify.register(availabilityRoutes)
-  await fastify.register(appointmentsRoutes)
   await fastify.register(marketplaceCategoriesRoutes)
   await fastify.register(marketplaceProductsRoutes)
   await fastify.register(marketplaceQuotesRoutes)

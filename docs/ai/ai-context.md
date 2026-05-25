@@ -27,7 +27,7 @@ Contexto mínimo para continuidade em novos chats. Atualizar ao fechar cada wave
 | Deletes | Soft delete (`deletedAt`) em Product, Category, Quote |
 | Rotas loja | `/marketplace/*` → raiz com redirects 301 temporários (`next.config.mjs`) |
 | Categorias | `/produtos/categoria/[slug]` (canônico) |
-| Hub (Pluma, tattoo, etc.) | Intocado até wave-7-cleanup |
+| Hub (Pluma, tattoo, etc.) | Removido em `wave-7-cleanup` |
 | Brand | Tudo via `apps/web/src/config/site.ts` |
 | Render | Não fixar `PORT=3333` no painel; API usa `PORT` do Render |
 | Catálogo vazio | Esperado até admin/seed de produtos |
@@ -58,6 +58,7 @@ Contexto mínimo para continuidade em novos chats. Atualizar ao fechar cada wave
 
 | Branch | Conteúdo | Status |
 |--------|----------|--------|
+| **`wave-7-cleanup`** | **Wave 7 — hub cleanup** | 🔄 Em progresso |
 | **`main`** | **Waves 3–6 (rotas, orçamentos, admin, observability)** | ✅ PR #4 mergeada; Render validado |
 | `wave-6-observability` | Histórico | Integrado em `main` |
 | `wave-3-routes` | Histórico | Integrado em `main` |
@@ -81,15 +82,14 @@ Contexto mínimo para continuidade em novos chats. Atualizar ao fechar cada wave
 5. Frontend **nunca** conhece tenant; respostas públicas sem `tenantId`
 6. Marca só em **`site.ts`**; sem hardcode de brand
 7. Sugestões fora do plano: explicar e obter OK antes
-8. Hub e prefixo `/marketplace` na API só saem na **wave-7-cleanup**
+8. Hub removido na **wave-7-cleanup**; prefixo `/marketplace` na API permanece até wave-8
 
 ## Pendências principais
 
-**Próxima wave ativa:** Wave 7 — hub cleanup (`tasks.md`)
+**Wave ativa:** `wave-7-cleanup` — hub cleanup (em validação)
 
 **Próximas waves (`tasks.md`):**
 
-- **7** — remoção hub
 - **8** — remover redirects `/marketplace`
 - **9** — testes finais, deploy, docs
 - **10** — property-based tests (Phase 2)
