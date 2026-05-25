@@ -24,10 +24,10 @@ const STORE_ARTIST_NAME = 'Toldos Colibri'
 async function main() {
   console.log('🌱 Seeding Colibri database...')
   console.log(`   Tenant: ${DEFAULT_TENANT_ID}`)
+  console.log(`   Store artist slug: ${DEFAULT_STORE_ARTIST_SLUG}`)
   console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`)
   console.log('')
 
-  // ── 1. Upsert default admin user (acts as the "colibri" tenant record) ────
   const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, SALT_ROUNDS)
   const adminId = randomUUID()
 
@@ -40,7 +40,6 @@ async function main() {
     },
     update: {
       role: 'admin',
-      // Do not overwrite password on subsequent runs — admin may have changed it
     },
     create: {
       id: adminId,
@@ -53,26 +52,44 @@ async function main() {
 
   console.log(`✓ Admin user upserted: ${admin.email} (siteId: ${DEFAULT_TENANT_ID})`)
 
-  // ── 2. Upsert store artist (single-store marketplace) ─────────────────────
-  const artist = await prisma.artist.upsert({
-    where: { slug: DEFAULT_STORE_ARTIST_SLUG },
-    update: {
-      userId: admin.id,
-      name: STORE_ARTIST_NAME,
-      isActive: true,
-    },
-    create: {
-      id: randomUUID(),
-      userId: admin.id,
-      name: STORE_ARTIST_NAME,
-      slug: DEFAULT_STORE_ARTIST_SLUG,
-      profileType: 'musician',
-      bio: [],
-      skills: [],
-      tools: [],
-      isActive: true,
-    },
+  // Um user só pode ter um Artist (userId único). Reaproveita artista existente do admin
+  // ou cria/atualiza pelo slug canônico `colibri`.
+  const existingForAdmin = await prisma.artist.findUnique({
+    where: { userId: admin.id },
+    select: { id: true, slug: true },
   })
+
+  let artist
+  if (existingForAdmin) {
+    artist = await prisma.artist.update({
+      where: { id: existingForAdmin.id },
+      data: {
+        slug: DEFAULT_STORE_ARTIST_SLUG,
+        name: STORE_ARTIST_NAME,
+        isActive: true,
+      },
+    })
+  } else {
+    artist = await prisma.artist.upsert({
+      where: { slug: DEFAULT_STORE_ARTIST_SLUG },
+      update: {
+        userId: admin.id,
+        name: STORE_ARTIST_NAME,
+        isActive: true,
+      },
+      create: {
+        id: randomUUID(),
+        userId: admin.id,
+        name: STORE_ARTIST_NAME,
+        slug: DEFAULT_STORE_ARTIST_SLUG,
+        profileType: 'musician',
+        bio: [],
+        skills: [],
+        tools: [],
+        isActive: true,
+      },
+    })
+  }
 
   await prisma.user.update({
     where: { id: admin.id },
