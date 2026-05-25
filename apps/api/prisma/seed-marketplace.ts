@@ -12,7 +12,10 @@
 import { PrismaClient } from '@prisma/client'
 import { randomUUID } from 'crypto'
 import { hashSync } from 'bcryptjs'
-import 'dotenv/config'
+import { loadPrismaEnv, requireDatabaseUrl } from './load-env.js'
+
+loadPrismaEnv()
+requireDatabaseUrl()
 
 const prisma = new PrismaClient()
 

@@ -6,11 +6,17 @@
  *
  * Usage: npx tsx prisma/seed.ts
  *        pnpm seed
+ *
+ * Requires DATABASE_URL — see prisma/load-env.ts (apps/api/.env, then repo root .env).
  */
 
-import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { randomUUID } from 'crypto'
+import { PrismaClient } from '@prisma/client'
+import { loadPrismaEnv, requireDatabaseUrl } from './load-env.js'
+
+loadPrismaEnv()
+requireDatabaseUrl()
 
 const prisma = new PrismaClient()
 

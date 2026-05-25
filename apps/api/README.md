@@ -47,6 +47,17 @@ As migrations SQL estão em `apps/api/migrations/` e são aplicadas via Prisma:
 pnpm prisma:migrate
 ```
 
+## Seed (`pnpm seed`)
+
+Carrega variáveis de `apps/api/.env` e, em seguida, `.env` na raiz do monorepo (paths fixos, independente do `cwd`).
+
+Em **Render/staging**, defina `DATABASE_URL` nas Environment Variables do serviço — não é necessário arquivo `.env` no deploy.
+
+```bash
+# Na raiz do monorepo ou em apps/api
+pnpm --filter @colibri/api seed
+```
+
 ## Autenticação (loja única)
 
 ### Estratégia
