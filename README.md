@@ -21,7 +21,7 @@ colibri/
 | Camada | Tecnologia | Deploy |
 |--------|-----------|--------|
 | Frontend | Next.js 14 (App Router) | Vercel |
-| Backend | Fastify 4 + Prisma ORM | Railway |
+| Backend | Fastify 4 + Prisma ORM | Render |
 | Banco de dados | PostgreSQL | Supabase |
 | Storage | Supabase Storage | Supabase |
 | Autenticação | JWT (access 15min) + Refresh Token (HttpOnly cookie, 7 dias) | — |
@@ -152,7 +152,8 @@ Consulte `.env.example` para a lista completa com valores de exemplo.
 6. **Não** defina `PORT` manualmente — o Render injeta a porta
 7. Variáveis: ver `docs/deploy-render.md` e `.env.example`
 
-Guia completo de troubleshooting Railway → Render: `docs/deploy-render.md`
+Guia de deploy e troubleshooting: `docs/deploy-render.md`  
+Checklist de validação (Wave 9): `docs/ops-validation.md` — smoke: `.\scripts\wave-9-smoke.ps1`
 
 ### Deploy do Web (Vercel)
 

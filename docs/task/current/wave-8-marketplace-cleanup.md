@@ -12,11 +12,11 @@ Remover definitivamente toda compatibilidade `/marketplace` preservando estabili
 - [x] Garantir que rotas antigas retornem 404 (sem página/redirect → 404 Next)
 
 ### Route Validation
-- [ ] Validar `/marketplace`
-- [ ] Validar `/marketplace/produtos`
-- [ ] Validar `/marketplace/produtos/[slug]`
-- [ ] Validar `/marketplace/minha-conta`
-- [ ] Confirmar comportamento 404 consistente
+- [x] Validar `/marketplace` *(404 em prod — wave 9 smoke)*
+- [x] Validar `/marketplace/produtos` *(404 em prod)*
+- [x] Validar `/marketplace/produtos/[slug]` *(404 em prod; sem rota legada)*
+- [x] Validar `/marketplace/minha-conta` *(404 em prod)*
+- [x] Confirmar comportamento 404 consistente (`scripts/wave-9-smoke.ps1`)
 
 ### Frontend Cleanup
 - [x] Buscar links internos usando `/marketplace` (nenhum href de loja; API `/marketplace/*` mantida)
