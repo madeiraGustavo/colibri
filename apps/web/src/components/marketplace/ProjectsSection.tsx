@@ -1,45 +1,90 @@
 import Link from 'next/link'
 
-const PROJECTS = [
-  { title: 'Cobertura Comercial', description: 'Shopping Center' },
-  { title: 'Toldo Retrátil', description: 'Restaurante' },
-  { title: 'Lona Industrial', description: 'Galpão Logístico' },
-  { title: 'Capota Náutica', description: 'Marina' },
+type ProjectCardSize = 'hero' | 'wide' | 'tall' | 'standard'
+
+type Project = {
+  title: string
+  description: string
+  location: string
+  segment: string
+  year: string
+  size: ProjectCardSize
+}
+
+const PROJECTS: Project[] = [
+  {
+    title: 'Estrutura Metálica Premium',
+    description: 'Cobertura sob medida com acabamento industrial',
+    location: 'Zona Sul — SP',
+    segment: 'Engenharia',
+    year: '2026',
+    size: 'hero',
+  },
+  {
+    title: 'Cobertura Comercial',
+    description: 'Proteção e fluxo para acesso principal',
+    location: 'Centro — SP',
+    segment: 'Comercial',
+    year: '2025',
+    size: 'tall',
+  },
+  {
+    title: 'Toldo Retrátil',
+    description: 'Conforto térmico e estética arquitetônica',
+    location: 'Pinheiros — SP',
+    segment: 'Gastronomia',
+    year: '2025',
+    size: 'wide',
+  },
+  {
+    title: 'Lona Industrial',
+    description: 'Cobertura de área de carga e docas',
+    location: 'Guarulhos — SP',
+    segment: 'Logística',
+    year: '2024',
+    size: 'standard',
+  },
+  {
+    title: 'Policarbonato Alveolar',
+    description: 'Iluminação natural com controle de intempéries',
+    location: 'ABC — SP',
+    segment: 'Residencial',
+    year: '2024',
+    size: 'standard',
+  },
+  {
+    title: 'Cobertura para Passarela',
+    description: 'Vãos amplos e desenho limpo, corporativo',
+    location: 'Vila Olímpia — SP',
+    segment: 'Corporativo',
+    year: '2023',
+    size: 'tall',
+  },
 ]
 
 const GRADIENTS = [
-  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-  'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+  'linear-gradient(145deg, #111111 0%, #2B2B2B 50%, rgba(244,180,0,0.25) 100%)',
+  'linear-gradient(145deg, #1a1a1a 0%, #333333 60%, rgba(244,180,0,0.15) 100%)',
+  'linear-gradient(160deg, #2B2B2B 0%, #111111 70%, rgba(244,180,0,0.2) 100%)',
+  'linear-gradient(135deg, #111111 20%, #2B2B2B 80%)',
 ]
 
-function ProjectPlaceholderSVG({ gradient }: { gradient: string }) {
+function ProjectMedia({
+  gradient,
+  title,
+}: {
+  gradient: string
+  title: string
+}) {
   return (
     <div
-      style={{
-        aspectRatio: '4/3',
-        background: gradient,
-        borderRadius: 'var(--mp-radius-md) var(--mp-radius-md) 0 0',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      className="mp-project-media"
+      style={{ backgroundImage: gradient }}
+      role="img"
+      aria-label={`Projeto — ${title}`}
     >
-      <svg
-        width="64"
-        height="64"
-        viewBox="0 0 64 64"
-        fill="none"
-        aria-hidden="true"
-      >
-        {/* Simple architectural/construction icon */}
-        <rect x="12" y="28" width="40" height="24" rx="2" fill="rgba(255,255,255,0.3)" />
-        <polygon points="32,8 8,28 56,28" fill="rgba(255,255,255,0.4)" />
-        <rect x="26" y="38" width="12" height="14" rx="1" fill="rgba(255,255,255,0.5)" />
-        <rect x="14" y="32" width="8" height="8" rx="1" fill="rgba(255,255,255,0.25)" />
-        <rect x="42" y="32" width="8" height="8" rx="1" fill="rgba(255,255,255,0.25)" />
-      </svg>
+      <div className="mp-project-media-glow" aria-hidden="true" />
+      <div className="mp-project-media-overlay" aria-hidden="true" />
     </div>
   )
 }
@@ -47,24 +92,9 @@ function ProjectPlaceholderSVG({ gradient }: { gradient: string }) {
 export function ProjectsSection() {
   return (
     <section className="mp-section">
-      <div
-        style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '0 var(--mp-content-padding)',
-        }}
-      >
+      <div className="mp-container mp-container-wide">
         {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '40px',
-            flexWrap: 'wrap',
-            gap: '16px',
-          }}
-        >
+        <div className="mp-section-header flex items-center justify-between flex-wrap gap-4">
           <div>
             <h2 className="mp-heading-2" style={{ marginBottom: '8px' }}>
               Nossos Projetos
@@ -95,47 +125,41 @@ export function ProjectsSection() {
           </Link>
         </div>
 
-        {/* Projects Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(1, 1fr)',
-            gap: '24px',
-          }}
-          className="mp-projects-grid"
-        >
-          {PROJECTS.map((project, index) => (
-            <article
-              key={project.title}
-              className="mp-card"
-              style={{ overflow: 'hidden', cursor: 'pointer' }}
-            >
-              <ProjectPlaceholderSVG gradient={GRADIENTS[index] ?? GRADIENTS[0]!} />
-              <div style={{ padding: '16px 20px' }}>
-                <h3
-                  style={{
-                    fontFamily: 'var(--mp-font-heading)',
-                    fontWeight: 600,
-                    fontSize: '1.125rem',
-                    color: 'var(--mp-text-default)',
-                    margin: '0 0 4px',
-                  }}
-                >
-                  {project.title}
-                </h3>
-                <p
-                  style={{
-                    fontFamily: 'var(--mp-font-body)',
-                    fontSize: '0.875rem',
-                    color: 'var(--mp-text-secondary)',
-                    margin: 0,
-                  }}
-                >
-                  {project.description}
-                </p>
-              </div>
-            </article>
-          ))}
+        {/* Projects Showcase (Wave 5) */}
+        <div className="mp-projects-showcase" aria-label="Showcase de projetos">
+          {PROJECTS.map((project, index) => {
+            const gradient = GRADIENTS[index % GRADIENTS.length] ?? GRADIENTS[0]!
+            return (
+              <Link
+                key={`${project.title}-${project.location}`}
+                className="mp-project-card"
+                data-size={project.size}
+                href="/orcamento"
+                aria-label={`Solicitar orçamento — ${project.title}`}
+              >
+                <ProjectMedia gradient={gradient} title={project.title} />
+
+                <div className="mp-project-overlay">
+                  <div className="mp-project-meta-top">
+                    <span className="mp-project-chip">{project.segment}</span>
+                    <span className="mp-project-dot" aria-hidden="true" />
+                    <span className="mp-project-subtle">{project.year}</span>
+                  </div>
+
+                  <div className="mp-project-meta-bottom">
+                    <h3 className="mp-project-title">{project.title}</h3>
+                    <p className="mp-project-desc">{project.description}</p>
+                    <div className="mp-project-footer">
+                      <span className="mp-project-location">{project.location}</span>
+                      <span className="mp-project-cta" aria-hidden="true">
+                        Solicitar orçamento →
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>
