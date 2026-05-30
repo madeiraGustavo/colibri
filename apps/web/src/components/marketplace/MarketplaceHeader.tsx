@@ -90,6 +90,17 @@ export function MarketplaceHeader() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMobileMenuOpen])
+
   const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false)
   }, [])
@@ -100,194 +111,160 @@ export function MarketplaceHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'backdrop-blur-md bg-white/90 shadow-sm'
-          : 'bg-white'
+      className={`sticky top-0 z-50 mp-header mp-header-motion ${
+        isScrolled ? 'mp-header--scrolled' : ''
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Logo */}
-        <a
-          href="/"
-          className="flex items-center gap-2"
-        >
-          <div className="w-8 h-8 flex items-center justify-center rounded-sm" style={{ backgroundColor: 'var(--mp-accent)' }}>
-            <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden="true">
-              <path d="M4 12 Q12 6 20 12 L20 14 Q12 8 4 14 Z" fill="var(--mp-text-on-accent)" />
-              <line x1="6" y1="14" x2="6" y2="20" stroke="var(--mp-text-on-accent)" strokeWidth="1.5" />
-              <line x1="18" y1="14" x2="18" y2="20" stroke="var(--mp-text-on-accent)" strokeWidth="1.5" />
-            </svg>
-          </div>
-          <span
-            className="text-lg font-bold uppercase tracking-tight"
-            style={{ fontFamily: 'var(--mp-font-heading)', color: 'var(--mp-text-default)' }}
-          >
-            {siteConfig.name}
-          </span>
-        </a>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8" aria-label="Navegação principal">
-          <a
-            href="/"
-            className="text-sm font-medium transition-colors duration-200 hover:opacity-80"
-            style={{ color: 'var(--mp-text-secondary)' }}
-          >
-            Catálogo
-          </a>
-          {NAV_CATEGORIES.map((cat) => (
-            <a
-              key={cat.slug}
-              href={`/produtos/categoria/${cat.slug}`}
-              className="text-sm font-medium transition-colors duration-200 hover:opacity-80"
-              style={{ color: 'var(--mp-text-secondary)' }}
-            >
-              {cat.label}
-            </a>
-          ))}
-          <a
-            href="/#orcamento"
-            className="text-sm font-medium transition-colors duration-200 hover:opacity-80"
-            style={{ color: 'var(--mp-text-secondary)' }}
-          >
-            Orçamento
-          </a>
-          {isArtist && (
-            <a
-              href="/admin"
-              className="text-sm font-medium transition-colors duration-200 hover:opacity-80"
-              style={{ color: 'var(--mp-text-secondary)' }}
-            >
-              Dashboard
-            </a>
-          )}
-        </nav>
-
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center gap-4">
-          {/* Cart Icon */}
-          <a
-            href="/cart"
-            className="relative flex items-center justify-center w-11 h-11 rounded-full transition-colors duration-200 hover:bg-gray-100"
-            aria-label={`Carrinho de compras, ${cartItemCount} ${cartItemCount === 1 ? 'item' : 'itens'}`}
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ color: 'var(--mp-text-default)' }}
-            >
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 01-8 0" />
-            </svg>
-            {cartItemCount > 0 && (
+      <div className="mp-container">
+        <div className="mp-header-surface">
+          <div className="mp-header-bar flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            {/* Logo */}
+            <a href="/" className="flex items-center gap-2 shrink-0">
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-sm"
+                style={{ backgroundColor: 'var(--mp-accent)' }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden="true">
+                  <path d="M4 12 Q12 6 20 12 L20 14 Q12 8 4 14 Z" fill="var(--mp-text-on-accent)" />
+                  <line x1="6" y1="14" x2="6" y2="20" stroke="var(--mp-text-on-accent)" strokeWidth="1.5" />
+                  <line x1="18" y1="14" x2="18" y2="20" stroke="var(--mp-text-on-accent)" strokeWidth="1.5" />
+                </svg>
+              </div>
               <span
-                className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full"
-                style={{
-                  backgroundColor: 'var(--mp-accent)',
-                  color: 'var(--mp-text-on-accent)',
-                }}
+                className="text-lg font-bold uppercase tracking-tight"
+                style={{ fontFamily: 'var(--mp-font-heading)', color: 'var(--mp-text-default)' }}
               >
-                {cartItemCount > 99 ? '99+' : cartItemCount}
+                {siteConfig.name}
               </span>
-            )}
-          </a>
-
-          {/* Login / Account / Logout */}
-          {authState === 'loading' ? (
-            <div className="w-24 h-10" /> /* placeholder while loading */
-          ) : !isLoggedIn ? (
-            <a
-              href="/login"
-              className="mp-btn-primary text-sm px-5 py-2"
-              style={{ minHeight: '44px', display: 'inline-flex', alignItems: 'center' }}
-            >
-              Entrar
             </a>
-          ) : (
-            <div className="flex items-center gap-3">
-              <a
-                href="/minha-conta"
-                className="text-sm font-medium transition-colors duration-200 hover:opacity-80"
-                style={{ color: 'var(--mp-text-default)' }}
-              >
-                Olá, {displayName}
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-1" aria-label="Navegação principal">
+              <a href="/" className="mp-nav-link mp-nav-link--pill">
+                Catálogo
               </a>
+              {NAV_CATEGORIES.map((cat) => (
+                <a
+                  key={cat.slug}
+                  href={`/produtos/categoria/${cat.slug}`}
+                  className="mp-nav-link mp-nav-link--pill"
+                >
+                  {cat.label}
+                </a>
+              ))}
+              <a href="/#orcamento" className="mp-nav-link mp-nav-link--pill">
+                Orçamento
+              </a>
+              {isArtist && (
+                <a href="/admin" className="mp-nav-link mp-nav-link--pill">
+                  Dashboard
+                </a>
+              )}
+            </nav>
+
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center gap-2">
+              {/* Cart Icon */}
+              <a
+                href="/carrinho"
+                className="mp-icon-btn mp-icon-btn-motion text-[var(--mp-text-default)]"
+                aria-label={`Carrinho de compras, ${cartItemCount} ${cartItemCount === 1 ? 'item' : 'itens'}`}
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 01-8 0" />
+                </svg>
+                {cartItemCount > 0 && (
+                  <span className="mp-badge">
+                    {cartItemCount > 99 ? '99+' : cartItemCount}
+                  </span>
+                )}
+              </a>
+
+              {/* Login / Account / Logout */}
+              {authState === 'loading' ? (
+                <div className="w-24 h-11" aria-hidden="true" />
+              ) : !isLoggedIn ? (
+                <a href="/login" className="mp-btn-primary mp-header-cta text-sm">
+                  Entrar
+                </a>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <a href="/minha-conta" className="mp-nav-link mp-nav-link--pill">
+                    Olá, {displayName}
+                  </a>
+                  <button
+                    type="button"
+                    disabled={isLoggingOut}
+                    onClick={handleLogout}
+                    className="mp-nav-link mp-nav-link--pill disabled:opacity-50"
+                  >
+                    Sair
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Actions */}
+            <div className="flex md:hidden items-center gap-1">
+              {/* Cart Icon (Mobile) */}
+              <a
+                href="/carrinho"
+                className="mp-icon-btn mp-icon-btn-motion text-[var(--mp-text-default)]"
+                aria-label={`Carrinho de compras, ${cartItemCount} ${cartItemCount === 1 ? 'item' : 'itens'}`}
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 01-8 0" />
+                </svg>
+                {cartItemCount > 0 && (
+                  <span className="mp-badge">
+                    {cartItemCount > 99 ? '99+' : cartItemCount}
+                  </span>
+                )}
+              </a>
+
+              {/* Hamburger Button */}
               <button
                 type="button"
-                disabled={isLoggingOut}
-                onClick={handleLogout}
-                className="text-sm font-medium transition-colors duration-200 hover:opacity-80 disabled:opacity-50"
-                style={{ color: 'var(--mp-text-secondary)' }}
+                onClick={toggleMobileMenu}
+                className="mp-icon-btn mp-icon-btn-motion text-[var(--mp-text-default)]"
+                aria-label={isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+                aria-expanded={isMobileMenuOpen}
               >
-                Sair
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile Actions */}
-        <div className="flex md:hidden items-center gap-2">
-          {/* Cart Icon (Mobile) */}
-          <a
-            href="/cart"
-            className="relative flex items-center justify-center w-11 h-11 rounded-full transition-colors duration-200 hover:bg-gray-100"
-            aria-label={`Carrinho de compras, ${cartItemCount} ${cartItemCount === 1 ? 'item' : 'itens'}`}
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ color: 'var(--mp-text-default)' }}
-            >
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 01-8 0" />
-            </svg>
-            {cartItemCount > 0 && (
-              <span
-                className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full"
-                style={{
-                  backgroundColor: 'var(--mp-accent)',
-                  color: 'var(--mp-text-on-accent)',
-                }}
-              >
-                {cartItemCount > 99 ? '99+' : cartItemCount}
-              </span>
-            )}
-          </a>
-
-          {/* Hamburger Button */}
-          <button
-            type="button"
-            onClick={toggleMobileMenu}
-            className="flex items-center justify-center w-11 h-11 rounded-full transition-colors duration-200 hover:bg-gray-100"
-            aria-label={isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
-            aria-expanded={isMobileMenuOpen}
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ color: 'var(--mp-text-default)' }}
-            >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
               {isMobileMenuOpen ? (
                 <>
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -300,15 +277,17 @@ export function MarketplaceHeader() {
                   <line x1="3" y1="18" x2="21" y2="18" />
                 </>
               )}
-            </svg>
-          </button>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Mobile Slide-in Panel */}
       {/* Overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-40 bg-black/40 mp-mobile-overlay md:hidden ${
           isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={closeMobileMenu}
@@ -317,8 +296,8 @@ export function MarketplaceHeader() {
 
       {/* Panel */}
       <div
-        className={`fixed top-0 right-0 z-50 h-full w-72 bg-white shadow-xl transition-transform duration-300 ease-in-out md:hidden ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed top-0 right-0 z-50 h-full w-72 mp-mobile-panel md:hidden ${
+          isMobileMenuOpen ? 'translate-x-0 mp-mobile-panel--open' : 'translate-x-full'
         }`}
         role="dialog"
         aria-modal="true"
@@ -335,7 +314,7 @@ export function MarketplaceHeader() {
           <button
             type="button"
             onClick={closeMobileMenu}
-            className="flex items-center justify-center w-11 h-11 rounded-full transition-colors duration-200 hover:bg-gray-100"
+            className="mp-icon-btn mp-icon-btn-motion text-[var(--mp-text-default)]"
             aria-label="Fechar menu"
           >
             <svg
@@ -347,7 +326,7 @@ export function MarketplaceHeader() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              style={{ color: 'var(--mp-text-default)' }}
+              aria-hidden="true"
             >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -359,8 +338,7 @@ export function MarketplaceHeader() {
         <nav className="flex flex-col p-4 gap-1" aria-label="Menu mobile">
           <a
             href="/"
-            className="flex items-center h-11 px-3 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-gray-100"
-            style={{ color: 'var(--mp-text-default)' }}
+            className="mp-mobile-nav-item mp-nav-link flex items-center h-11 px-3 rounded-lg"
             onClick={closeMobileMenu}
           >
             Catálogo
@@ -369,8 +347,7 @@ export function MarketplaceHeader() {
             <a
               key={cat.slug}
               href={`/produtos/categoria/${cat.slug}`}
-              className="flex items-center h-11 px-3 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-gray-100"
-              style={{ color: 'var(--mp-text-default)' }}
+              className="mp-mobile-nav-item mp-nav-link flex items-center h-11 px-3 rounded-lg"
               onClick={closeMobileMenu}
             >
               {cat.label}
@@ -378,8 +355,7 @@ export function MarketplaceHeader() {
           ))}
           <a
             href="/#orcamento"
-            className="flex items-center h-11 px-3 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-gray-100"
-            style={{ color: 'var(--mp-text-default)' }}
+            className="mp-mobile-nav-item mp-nav-link flex items-center h-11 px-3 rounded-lg"
             onClick={closeMobileMenu}
           >
             Orçamento
@@ -387,8 +363,7 @@ export function MarketplaceHeader() {
           {isArtist && (
             <a
               href="/admin"
-              className="flex items-center h-11 px-3 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-gray-100"
-              style={{ color: 'var(--mp-text-default)' }}
+              className="mp-mobile-nav-item mp-nav-link flex items-center h-11 px-3 rounded-lg"
               onClick={closeMobileMenu}
             >
               Dashboard
@@ -403,7 +378,7 @@ export function MarketplaceHeader() {
           ) : !isLoggedIn ? (
             <a
               href="/login"
-              className="mp-btn-primary w-full text-sm text-center"
+              className="mp-btn-primary mp-header-cta w-full text-sm text-center"
               onClick={closeMobileMenu}
             >
               Entrar
