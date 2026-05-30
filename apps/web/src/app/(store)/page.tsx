@@ -8,6 +8,8 @@ import { ProductCard } from '@/components/marketplace/ProductCard'
 import { SocialProofSection } from '@/components/marketplace/SocialProofSection'
 import { ProjectsSection } from '@/components/marketplace/ProjectsSection'
 import { TrustBadges } from '@/components/marketplace/TrustBadges'
+import { DifferentialsSection } from '@/components/marketplace/DifferentialsSection'
+import { ProcessSection } from '@/components/marketplace/ProcessSection'
 import { EmptyState } from '@/components/marketplace/EmptyState'
 import { SkeletonCard } from '@/components/marketplace/SkeletonCard'
 import { LocalBusinessJsonLd, BreadcrumbJsonLd } from '@/components/marketplace/JsonLd'
@@ -55,10 +57,10 @@ export default async function HomePage() {
 
       {/* Catalog Section (Client Component for search/filter interactivity) */}
       <section id="catalogo" className="mp-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-10">
+        <div className="mp-container">
+          <div className="mp-section-header">
             <h2 className="mp-heading-2">Nossos Produtos</h2>
-            <p style={{ color: 'var(--mp-text-secondary)', marginTop: '8px', fontSize: '1.125rem' }}>
+            <p style={{ color: 'var(--mp-text-secondary)', marginTop: '12px', fontSize: '1.125rem' }}>
               Encontre o produto certo para o seu próximo projeto
             </p>
           </div>
@@ -72,7 +74,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Social Proof */}
+      {/* Diferenciais (Wave 6) */}
+      <DifferentialsSection />
+
+      {/* Processo de trabalho (Wave 6) */}
+      <ProcessSection />
+
+      {/* Sobre a empresa */}
       <SocialProofSection />
 
       {/* Projects */}
@@ -83,7 +91,7 @@ export default async function HomePage() {
 
 function CatalogSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="mp-grid-catalog">
       {Array.from({ length: 6 }, (_, i) => (
         <SkeletonCard key={i} />
       ))}
