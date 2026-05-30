@@ -8,6 +8,14 @@ const METRICS = [
   { value: 300, suffix: '+', label: 'Projetos Entregues' },
   { value: 500, suffix: '+', label: 'Clientes Atendidos' },
   { value: 10, suffix: '+', label: 'Anos de Experiência' },
+  { value: 100, suffix: '%', label: 'Fabricação Própria' },
+]
+
+const CAPABILITIES = [
+  'Projeto e engenharia',
+  'Corte e solda de precisão',
+  'Instalação especializada',
+  'Garantia de acabamento',
 ]
 
 const TESTIMONIALS = [
@@ -64,44 +72,51 @@ function useCountUp(target: number, duration: number, trigger: boolean) {
   return value
 }
 
-/* ─── Metric Card ─── */
+/* ─── Stat Plate ─── */
 
-function MetricCard({
+function StatPlate({
   value,
   suffix,
   label,
   inView,
+  accent,
 }: {
   value: number
   suffix: string
   label: string
   inView: boolean
+  accent?: boolean
 }) {
   const displayValue = useCountUp(value, 1500, inView)
 
   return (
-    <div
-      className="flex flex-col items-center justify-center p-6 rounded-lg text-center"
-      style={{
-        backgroundColor: 'var(--mp-bg-dark)',
-        color: 'var(--mp-text-on-dark)',
-      }}
-    >
-      <span
-        className="text-4xl font-bold"
-        style={{ fontFamily: 'var(--mp-font-heading)' }}
-        aria-label={`${value}${suffix}`}
-      >
+    <div className={`mp-stat-plate${accent ? ' mp-stat-plate--accent' : ''}`}>
+      <span className="mp-stat-plate__value" aria-label={`${value}${suffix}`}>
         {displayValue}
         {suffix}
       </span>
-      <span
-        className="mt-2 text-sm"
-        style={{ color: 'var(--mp-text-muted)' }}
-      >
-        {label}
-      </span>
+      <span className="mp-stat-plate__label">{label}</span>
     </div>
+  )
+}
+
+/* ─── Check Icon ─── */
+
+function CheckIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 8.5l3.5 3.5L13 4" />
+    </svg>
   )
 }
 
@@ -155,91 +170,75 @@ export function SocialProofSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="mp-section" aria-labelledby="social-proof-heading">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-        {/* 2-column layout: text left, metrics right */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-          {/* Left column: About text */}
+    <section
+      ref={sectionRef}
+      id="sobre"
+      className="mp-section mp-section--frame"
+      aria-labelledby="social-proof-heading"
+    >
+      <div className="mp-blueprint" aria-hidden="true" />
+      <div className="mp-container">
+        <div className="mp-about-grid">
+          {/* Left column: About narrative */}
           <div>
-            <h2 id="social-proof-heading" className="mp-heading-2">
-              Sobre Nós
+            <span className="mp-kicker">Sobre a Colibri</span>
+            <h2 id="social-proof-heading" className="mp-inst-header__title" style={{ marginTop: '1rem' }}>
+              Fabricação própria, padrão industrial
             </h2>
-            <p
-              className="mt-4 text-base leading-relaxed"
-              style={{ color: 'var(--mp-text-secondary)' }}
-            >
-              Somos especialistas em toldos, coberturas e lonas sob medida. Com mais de uma
-              década de experiência, atendemos projetos comerciais e residenciais em toda São
-              Paulo, sempre com foco em qualidade, durabilidade e acabamento impecável.
+            <p className="mp-about-copy" style={{ marginTop: '1.5rem' }}>
+              Somos uma indústria especializada em toldos, coberturas, lonas técnicas e estruturas
+              metálicas sob medida. Com mais de uma década de atuação, conduzimos cada projeto
+              internamente — da engenharia ao acabamento — para garantir robustez, durabilidade e
+              precisão construtiva.
             </p>
-            <a
-              href="/#categorias"
-              className="inline-flex items-center gap-1 mt-6 text-sm font-semibold"
-              style={{ color: 'var(--mp-text-accent)' }}
-            >
-              Saiba mais
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M6 4l4 4-4 4" />
-              </svg>
-            </a>
+            <p className="mp-about-copy">
+              Atendemos obras comerciais, residenciais e industriais em toda a região de São Paulo,
+              com equipe técnica própria e controle total da produção.
+            </p>
+
+            <ul className="mp-checklist">
+              {CAPABILITIES.map((item) => (
+                <li key={item} className="mp-checklist__item">
+                  <span className="mp-checklist__mark">
+                    <CheckIcon />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Right column: Metrics grid */}
-          <div className="grid grid-cols-2 gap-4">
-            {METRICS.map((metric) => (
-              <MetricCard
+          {/* Right column: Industrial stat plates */}
+          <div className="mp-stat-stack">
+            {METRICS.map((metric, index) => (
+              <StatPlate
                 key={metric.label}
                 value={metric.value}
                 suffix={metric.suffix}
                 label={metric.label}
                 inView={inView}
+                accent={index === 0}
               />
             ))}
           </div>
         </div>
 
-        {/* Testimonials */}
-        <div className="mt-12">
-          {TESTIMONIALS.map((testimonial) => (
-            <div
-              key={testimonial.author}
-              className="mp-card p-8"
-              style={{ maxWidth: '640px' }}
-            >
-              <StarRating rating={testimonial.rating} />
-              <blockquote
-                className="mt-4 text-base italic leading-relaxed"
-                style={{ color: 'var(--mp-text-secondary)' }}
-              >
-                &ldquo;{testimonial.text}&rdquo;
-              </blockquote>
-              <div className="mt-4">
-                <span
-                  className="font-semibold text-sm"
-                  style={{ color: 'var(--mp-text-default)' }}
-                >
-                  {testimonial.author}
-                </span>
-                <span
-                  className="ml-2 text-sm"
-                  style={{ color: 'var(--mp-text-muted)' }}
-                >
-                  {testimonial.role}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Testimonial */}
+        {TESTIMONIALS.map((testimonial) => (
+          <figure key={testimonial.author} className="mp-quote">
+            <span className="mp-quote__mark" aria-hidden="true">
+              &ldquo;
+            </span>
+            <StarRating rating={testimonial.rating} />
+            <blockquote className="mp-quote__text">{testimonial.text}</blockquote>
+            <figcaption>
+              <span className="mp-quote__author">{testimonial.author}</span>
+              <span className="mp-quote__role" style={{ marginLeft: '0.75rem' }}>
+                {testimonial.role}
+              </span>
+            </figcaption>
+          </figure>
+        ))}
       </div>
     </section>
   )

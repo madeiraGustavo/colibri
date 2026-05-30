@@ -1102,3 +1102,485 @@
     grid-column: span 6;
   }
 }
+
+/* ============================================================= */
+/* === Industrial Institutional Sections (Wave 6) ============== */
+/* ============================================================= */
+
+/* --- Section framing & blueprint backdrop --- */
+.marketplace .mp-section--frame {
+  position: relative;
+  border-top: 1px solid var(--mp-border-default);
+  background:
+    linear-gradient(180deg, rgba(244, 180, 0, 0.018) 0%, transparent 26%),
+    var(--mp-bg-base);
+  overflow: clip;
+}
+
+.marketplace .mp-section--surface {
+  background: var(--mp-bg-surface);
+}
+
+.marketplace .mp-blueprint {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 0%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 0%, transparent 78%);
+}
+
+.marketplace .mp-section--frame > .mp-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Kicker / eyebrow --- */
+.marketplace .mp-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--mp-font-heading);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--colibri-yellow);
+}
+
+.marketplace .mp-kicker::before {
+  content: '';
+  width: 26px;
+  height: 2px;
+  flex-shrink: 0;
+  background: var(--colibri-yellow);
+}
+
+.marketplace .mp-kicker--center {
+  justify-content: center;
+}
+
+/* --- Institutional header block --- */
+.marketplace .mp-inst-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2.75rem;
+}
+
+.marketplace .mp-inst-header__title {
+  font-family: var(--mp-font-heading);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  color: var(--mp-text-default);
+  font-size: clamp(1.875rem, 3.4vw, 2.75rem);
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+.marketplace .mp-inst-header__lead {
+  font-family: var(--mp-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--mp-text-secondary);
+  max-width: 52ch;
+}
+
+@media (min-width: 900px) {
+  .marketplace .mp-inst-header--split {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2.5rem;
+  }
+
+  .marketplace .mp-inst-header--split .mp-inst-header__lead {
+    text-align: right;
+    padding-bottom: 0.35rem;
+  }
+}
+
+/* --- Stitched industrial grid (specs / categories) --- */
+.marketplace .mp-spec-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--mp-border-default);
+  border: 1px solid var(--mp-border-default);
+  border-radius: var(--mp-radius-md);
+  overflow: hidden;
+}
+
+@media (min-width: 560px) {
+  .marketplace .mp-spec-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .marketplace .mp-spec-grid--5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .marketplace .mp-spec-grid--4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.marketplace .mp-spec-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.75rem 1.5rem 2rem;
+  background: var(--mp-bg-elevated);
+  transition: background 220ms ease;
+  overflow: hidden;
+}
+
+.marketplace .mp-spec-cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--colibri-yellow);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 260ms ease;
+}
+
+.marketplace .mp-spec-cell:hover {
+  background: #1f1f1f;
+}
+
+.marketplace .mp-spec-cell:hover::before {
+  transform: scaleX(1);
+}
+
+.marketplace .mp-spec-cell__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.marketplace .mp-spec-cell__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  color: var(--colibri-yellow);
+  background: rgba(244, 180, 0, 0.07);
+  border: 1px solid rgba(244, 180, 0, 0.22);
+  border-radius: var(--mp-radius-sm);
+}
+
+.marketplace .mp-spec-cell__index {
+  font-family: var(--mp-font-heading);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--mp-text-muted);
+}
+
+.marketplace .mp-spec-cell__title {
+  font-family: var(--mp-font-heading);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mp-text-default);
+}
+
+.marketplace .mp-spec-cell__desc {
+  font-family: var(--mp-font-body);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--mp-text-secondary);
+}
+
+/* --- Diferenciais (feature blocks) --- */
+.marketplace .mp-feature-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .marketplace .mp-feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.marketplace .mp-feature {
+  position: relative;
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.75rem 1.75rem 1.75rem 1.5rem;
+  background: var(--mp-bg-elevated);
+  border: 1px solid var(--mp-border-default);
+  border-left: 3px solid var(--colibri-yellow);
+  border-radius: var(--mp-radius-sm);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.marketplace .mp-feature:hover {
+  transform: translateY(-3px);
+  border-color: rgba(244, 180, 0, 0.4);
+  border-left-color: var(--colibri-yellow);
+  box-shadow: var(--mp-shadow-md);
+}
+
+.marketplace .mp-feature__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  color: var(--colibri-yellow);
+  background: rgba(244, 180, 0, 0.07);
+  border: 1px solid rgba(244, 180, 0, 0.22);
+  border-radius: var(--mp-radius-sm);
+}
+
+.marketplace .mp-feature__title {
+  font-family: var(--mp-font-heading);
+  font-size: 1.0625rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--mp-text-default);
+  margin-bottom: 0.5rem;
+}
+
+.marketplace .mp-feature__desc {
+  font-family: var(--mp-font-body);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--mp-text-secondary);
+}
+
+/* --- Processo (numbered industrial steps) --- */
+.marketplace .mp-process {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--mp-border-default);
+  border: 1px solid var(--mp-border-default);
+  border-radius: var(--mp-radius-md);
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .marketplace .mp-process--4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.marketplace .mp-process-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 2rem 1.75rem 2.25rem;
+  background: var(--mp-bg-elevated);
+  transition: background 220ms ease;
+}
+
+.marketplace .mp-process-step:hover {
+  background: #1f1f1f;
+}
+
+.marketplace .mp-process-step__num {
+  font-family: var(--mp-font-heading);
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1;
+  color: rgba(244, 180, 0, 0.85);
+}
+
+.marketplace .mp-process-step__rule {
+  width: 32px;
+  height: 2px;
+  background: rgba(244, 180, 0, 0.4);
+}
+
+.marketplace .mp-process-step__title {
+  font-family: var(--mp-font-heading);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--mp-text-default);
+}
+
+.marketplace .mp-process-step__desc {
+  font-family: var(--mp-font-body);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--mp-text-secondary);
+}
+
+/* --- About / stat plates --- */
+.marketplace .mp-about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .marketplace .mp-about-grid {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 4rem;
+  }
+}
+
+.marketplace .mp-about-copy {
+  font-family: var(--mp-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--mp-text-secondary);
+}
+
+.marketplace .mp-about-copy + .mp-about-copy {
+  margin-top: 1.25rem;
+}
+
+.marketplace .mp-checklist {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.875rem;
+  margin-top: 1.75rem;
+}
+
+@media (min-width: 520px) {
+  .marketplace .mp-checklist {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.marketplace .mp-checklist__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--mp-font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--mp-text-default);
+}
+
+.marketplace .mp-checklist__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  color: var(--colibri-yellow);
+  border: 1px solid rgba(244, 180, 0, 0.3);
+  border-radius: var(--mp-radius-sm);
+}
+
+.marketplace .mp-stat-stack {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--mp-border-default);
+  border: 1px solid var(--mp-border-default);
+  border-radius: var(--mp-radius-md);
+  overflow: hidden;
+}
+
+.marketplace .mp-stat-plate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.75rem 1.5rem;
+  background: var(--mp-bg-elevated);
+}
+
+.marketplace .mp-stat-plate--accent {
+  background: linear-gradient(160deg, rgba(244, 180, 0, 0.08), transparent 70%), var(--mp-bg-elevated);
+}
+
+.marketplace .mp-stat-plate__value {
+  font-family: var(--mp-font-heading);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--colibri-yellow);
+}
+
+.marketplace .mp-stat-plate__label {
+  font-family: var(--mp-font-body);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mp-text-secondary);
+}
+
+/* --- Quote / testimonial panel --- */
+.marketplace .mp-quote {
+  position: relative;
+  margin-top: 2.5rem;
+  padding: 2.5rem 2.5rem 2.25rem;
+  background: var(--mp-bg-surface);
+  border: 1px solid var(--mp-border-default);
+  border-left: 3px solid var(--colibri-yellow);
+  border-radius: var(--mp-radius-sm);
+}
+
+.marketplace .mp-quote__mark {
+  font-family: var(--mp-font-heading);
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 0.6;
+  color: rgba(244, 180, 0, 0.28);
+}
+
+.marketplace .mp-quote__text {
+  font-family: var(--mp-font-body);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--mp-text-on-dark);
+  margin: 1rem 0 1.5rem;
+  max-width: 60ch;
+}
+
+.marketplace .mp-quote__author {
+  font-family: var(--mp-font-heading);
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mp-text-default);
+}
+
+.marketplace .mp-quote__role {
+  font-family: var(--mp-font-body);
+  font-size: 0.8125rem;
+  color: var(--mp-text-muted);
+}
+
+@media (max-width: 480px) {
+  .marketplace .mp-quote {
+    padding: 1.75rem 1.5rem;
+  }
+
+  .marketplace .mp-process-step,
+  .marketplace .mp-spec-cell {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
